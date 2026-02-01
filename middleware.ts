@@ -1,13 +1,20 @@
 import { createServerClient, type CookieOptions } from '@supabase/ssr'
 import { NextResponse, type NextRequest } from 'next/server'
+import createMiddleware from 'next-intl/middleware'
+import { routing } from './i18n/navigation'
+
+const intlMiddleware = createMiddleware(routing);
 
 export async function middleware(request: NextRequest) {
-    let response = NextResponse.next({
-        request: {
-            headers: request.headers,
-        },
-    })
+    // 1. Run next-intl middleware first to handle locale routing and redirects
+    const response = intlMiddleware(request)
 
+    // If next-intl returned a redirect (e.g. / -> /en), return it immediately
+    if (response.status === 307 || response.status === 308) {
+        return response
+    }
+
+    // 2. Setup Supabase client
     const supabase = createServerClient(
         process.env.NEXT_PUBLIC_SUPABASE_URL!,
         process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
@@ -22,11 +29,6 @@ export async function middleware(request: NextRequest) {
                         value,
                         ...options,
                     })
-                    response = NextResponse.next({
-                        request: {
-                            headers: request.headers,
-                        },
-                    })
                     response.cookies.set({
                         name,
                         value,
@@ -38,11 +40,6 @@ export async function middleware(request: NextRequest) {
                         name,
                         value: '',
                         ...options,
-                    })
-                    response = NextResponse.next({
-                        request: {
-                            headers: request.headers,
-                        },
                     })
                     response.cookies.set({
                         name,
@@ -58,48 +55,59 @@ export async function middleware(request: NextRequest) {
         data: { session },
     } = await supabase.auth.getSession()
 
-    // Protect dashboard routes
-    const protectedPaths = [
-        '/dashboard',
-        '/patients',
-        '/appointments',
-        '/visits',
-        '/procedures',
-        '/invoices',
-        '/settings',
+    // Protected routes must account for the locale prefix (e.g., /en/dashboard)
+    // We regex against path like /:locale/path
+    const pathname = request.nextUrl.pathname
+
+    // Helper to check if path is protected
+    const protectedSegments = [
+        'dashboard',
+        'patients',
+        'appointments',
+        'visits',
+        'procedures',
+        'invoices',
+        'settings',
     ]
 
-    const isProtectedPath = protectedPaths.some(path =>
-        request.nextUrl.pathname.startsWith(path)
+    // Check if the path (stripping locale) matches any protected segment
+    // Path might be /en/dashboard or /dashboard (if missing locale, intlMiddleware handles it, but we double check)
+    const isProtectedPath = protectedSegments.some(segment =>
+        pathname.match(new RegExp(`^/(${['en', 'ar', 'tr'].join('|')})/${segment}`)) ||
+        pathname.startsWith(`/${segment}`)
     )
 
     // Redirect to login if not authenticated
     if (!session && isProtectedPath) {
-        const redirectUrl = new URL('/login', request.url)
-        redirectUrl.searchParams.set('redirectTo', request.nextUrl.pathname)
+        // Construct login URL with locale
+        // We assume the locale is the first segment if present, else default 'en'
+        const localeMatch = pathname.match(/^\/(en|ar|tr)/)
+        const locale = localeMatch ? localeMatch[1] : 'en'
+
+        const redirectUrl = new URL(`/${locale}/login`, request.url)
+        redirectUrl.searchParams.set('redirectTo', pathname)
         return NextResponse.redirect(redirectUrl)
     }
 
-    // Redirect to dashboard if already logged in and trying to access login
-    if (session && request.nextUrl.pathname === '/login') {
-        return NextResponse.redirect(new URL('/dashboard', request.url))
+    // Redirect to dashboard if logged in and accessing login/signup
+    if (session) {
+        const isAuthPage = pathname.match(/^\/(en|ar|tr)\/(login|signup)$/) || pathname.match(/^\/(login|signup)$/)
+        if (isAuthPage) {
+            const localeMatch = pathname.match(/^\/(en|ar|tr)/)
+            const locale = localeMatch ? localeMatch[1] : 'en'
+            return NextResponse.redirect(new URL(`/${locale}/dashboard`, request.url))
+        }
     }
 
-    // SaaS: Fetch Tenant Context (Clinic ID) and pass it to headers
+    // SaaS: Fetch Tenant Context
     if (session) {
-        // We use the new RPC function to get clinic_ids efficiently without RLS recursion issues
         const { data: clinicIds } = await supabase.rpc('get_my_clinic_ids')
-
-        // For V1, we just take the first clinic (Single Clinic per User)
         const currentClinicId = clinicIds?.[0]
 
         if (currentClinicId) {
-            // Store in request headers so Server Components can read it easily
             response.headers.set('x-clinic-id', currentClinicId)
-
-            // Also set a secure cookie for client-side access if needed (optional but helpful)
             response.cookies.set('clinic_id', currentClinicId, {
-                httpOnly: false, // Allow client JS to read it for UI logic
+                httpOnly: false,
                 secure: process.env.NODE_ENV === 'production',
                 sameSite: 'lax',
                 maxAge: 60 * 60 * 24 * 7 // 1 week
@@ -112,6 +120,7 @@ export async function middleware(request: NextRequest) {
 
 export const config = {
     matcher: [
-        '/((?!api|_next/static|_next/image|favicon.ico).*)',
+        // Exclude static files, API routes, and Next.js internals from middleware
+        '/((?!api|_next/static|_next/image|favicon.ico|.*\\.png$|.*\\.jpg$|.*\\.svg$|.*\\.ico$).*)',
     ],
 }

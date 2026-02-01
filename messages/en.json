@@ -1,0 +1,211 @@
+{
+    "Features": {
+        "title": "Everything you need to run your clinic",
+        "subtitle": "Powerful features designed to replace paperwork and scattered tools.",
+        "items": {
+            "records": {
+                "title": "Patient Records",
+                "desc": "Store secure, searchable medical history, visits, and documents in one place."
+            },
+            "scheduling": {
+                "title": "Smart Scheduling",
+                "desc": "Drag-and-drop calendar with automated SMS reminders to reduce no-shows."
+            },
+            "billing": {
+                "title": "Billing & Invoicing",
+                "desc": "Generate professional invoices, track payments, and manage insurance claims."
+            },
+            "mobile": {
+                "title": "Mobile Friendly",
+                "desc": "Access your clinic from any device. Perfect for doctors on the move."
+            },
+            "notes": {
+                "title": "Clinical Notes",
+                "desc": "Specialized templates for diagnosis, prescriptions, and procedure notes."
+            },
+            "security": {
+                "title": "Bank-Grade Security",
+                "desc": "Your data is encrypted at rest and in transit. HIPAA compliant architecture."
+            }
+        }
+    },
+    "Footer": {
+        "tagline": "The modern operating system for forward-thinking clinics.",
+        "product": "Product",
+        "company": "Company",
+        "legal": "Legal",
+        "rights": "SehaTech Inc. All rights reserved.",
+        "about": "About",
+        "blog": "Blog",
+        "careers": "Careers",
+        "privacy": "Privacy Policy",
+        "terms": "Terms of Service",
+        "demo": "Demo"
+    },
+    "Sidebar": {
+        "dashboard": "Dashboard",
+        "patients": "Patients",
+        "appointments": "Appointments",
+        "visits": "Visits",
+        "invoices": "Invoices",
+        "procedures": "Procedures",
+        "settings": "Settings",
+        "logout": "Log out"
+    },
+    "Navbar": {
+        "features": "Features",
+        "pricing": "Pricing",
+        "login": "Log In",
+        "getStarted": "Get Started"
+    },
+    "Hero": {
+        "scrollingBadge": "🚀 The #1 Clinic Management Software in MENA",
+        "headlinePrefix": "The Operating System for",
+        "headlineSuffix": "Modern Clinics",
+        "subhead": "Streamline appointments, manage patient records, and automate billing. Built for doctors who care about efficiency.",
+        "ctaStart": "Start Free Trial",
+        "ctaDemo": "View Demo",
+        "trustHipaa": "HIPAA Compliant",
+        "trustNoCard": "No Credit Card Required",
+        "trustSetup": "Set up in 2 minutes"
+    },
+    "Pricing": {
+        "title": "Simple, transparent pricing",
+        "subtitle": "Choose the plan that fits your clinic size. No hidden fees.",
+        "starter": "Starter",
+        "starterDesc": "Perfect for new solo private clinics.",
+        "free": "Free",
+        "forever": "forever",
+        "pro": "Professional",
+        "proDesc": "For growing clinics with staff.",
+        "mostPopular": "Most Popular",
+        "month": "month",
+        "enterprise": "Enterprise",
+        "enterpriseDesc": "For large centers & hospitals.",
+        "custom": "Custom",
+        "features": {
+            "user1": "1 User Account",
+            "user3": "3 User Accounts (Dr + Staff)",
+            "patients20": "Up to 20 Patients",
+            "patients500": "Up to 500 Patients",
+            "unlimited": "Unlimited Users"
+        },
+        "ctaFree": "Start for Free",
+        "ctaPro": "Get Started",
+        "ctaSales": "Contact Sales"
+    },
+    "ForgotPassword": {
+        "title": "Forgot your password?",
+        "subtitle": "Enter your email and we'll send you a 6-digit code.",
+        "emailLabel": "Email Address",
+        "emailPlaceholder": "doctor@clinic.com",
+        "sendCode": "Send Code",
+        "sending": "Sending...",
+        "backToLogin": "Back to Login",
+        "codeSentTitle": "Code Sent!",
+        "codeSentDesc": "Check your inbox for the 6-digit verification code.",
+        "enterCodeTitle": "Enter Verification Code",
+        "enterCodeSubtitle": "We sent a 6-digit code to",
+        "verifyCode": "Verify Code",
+        "verifying": "Verifying...",
+        "invalidCode": "Invalid or expired code",
+        "codeExpired": "This code has expired. Please request a new one.",
+        "codeVerified": "Code verified! Now set your new password.",
+        "resendCode": "Didn't receive code? Send again",
+        "useAnotherEmail": "Use a different email",
+        "newPasswordTitle": "Set New Password",
+        "newPasswordSubtitle": "Enter your new password below.",
+        "newPassword": "New Password",
+        "confirmPassword": "Confirm Password",
+        "updatePassword": "Update Password",
+        "updating": "Updating...",
+        "passwordMismatch": "Passwords do not match",
+        "passwordTooShort": "Password must be at least 6 characters",
+        "successTitle": "Password Updated!",
+        "successDesc": "Your password has been successfully updated.",
+        "redirecting": "Redirecting you to login...",
+        "errorTitle": "Error",
+        "errorDesc": "Something went wrong. Please try again."
+    },
+    "ResetPassword": {
+        "title": "Reset Your Password",
+        "subtitle": "Enter your new password below.",
+        "newPassword": "New Password",
+        "confirmPassword": "Confirm Password",
+        "updatePassword": "Update Password",
+        "updating": "Updating...",
+        "successTitle": "Password Updated!",
+        "successDesc": "Your password has been successfully updated.",
+        "redirecting": "Redirecting you to login...",
+        "goToLogin": "Go to Login",
+        "invalidLink": "This reset link is invalid or has expired.",
+        "invalidLinkTitle": "Invalid Link",
+        "requestNewLink": "Request a New Link",
+        "passwordMismatch": "Passwords do not match",
+        "passwordTooShort": "Password must be at least 6 characters",
+        "errorTitle": "Error",
+        "errorDesc": "Something went wrong. Please try again."
+    },
+    "Settings": {
+        "title": "Settings",
+        "subtitle": "Manage your clinic information and team",
+        "tabs": {
+            "profile": "Clinic Profile",
+            "team": "Team Members"
+        },
+        "profile": {
+            "title": "Clinic Information",
+            "description": "Basic information about your medical practice",
+            "name": "Clinic Name",
+            "phone": "Contact Phone",
+            "address": "Address",
+            "email": "Email",
+            "website": "Website",
+            "currency": "Clinic Currency",
+            "currencyDesc": "Used for invoices and financial reports.",
+            "currencyPlaceholder": "Select currency",
+            "save": "Save Changes",
+            "saving": "Saving...",
+            "success": "Clinic settings saved successfully!",
+            "error": "Failed to save changes",
+            "ownerOnly": "Only clinic owners can edit these settings."
+        },
+        "team": {
+            "title": "Team Members",
+            "description": "People who have access to this clinic",
+            "usage": "Plan Usage",
+            "members": "Members",
+            "noMembers": "No team members found",
+            "pendingTitle": "Pending Invitations",
+            "pendingDesc": "Manage pending invitations.",
+            "roles": {
+                "owner": "Owner",
+                "doctor": "Doctor",
+                "staff": "Staff"
+            }
+        },
+        "Dashboard": {
+            "greeting": "Good Morning",
+            "greetingSubtitle": "Here's what's happening in your clinic today.",
+            "recordVisit": "Record Visit",
+            "addPatient": "Add Patient",
+            "totalPatients": "Total Patients",
+            "appointmentsToday": "Appointments Today",
+            "pendingInvoices": "Pending Invoices",
+            "totalRevenue": "Total Revenue",
+            "scheduledToday": "Scheduled for today",
+            "unpaidBalance": "Unpaid balance",
+            "quickActions": "Quick Actions",
+            "quickActionsDesc": "Common tasks you perform daily.",
+            "recordNewVisit": "Record New Visit",
+            "registerPatient": "Register Patient",
+            "appointments": "Appointments",
+            "manageBilling": "Manage Billing",
+            "recentActivity": "Recent Activity",
+            "noActivity": "No recent activity."
+        }
+    },
+    "Login": {
+        "forgotPassword": "Forgot password?"
+    }
+}

@@ -1,0 +1,21 @@
+▲ Next.js 16.1.1 (Turbopack)
+- Environments: .env.local
+
+⚠ The "middleware" file convention is deprecated. Please use "proxy" instead. Learn more: https://nextjs.org/docs/messages/middleware-to-proxy
+  Creating an optimized production build ...
+✓ Compiled successfully in 11.0s
+  Running TypeScript ...
+Failed to compile.
+
+.next/dev/types/validator.ts:25:44
+Type error: Type 'Route' does not satisfy the constraint '"/[locale]"'.
+  Type '"/"' is not assignable to type '"/[locale]"'.
+
+[0m [90m 23 |[39m
+ [90m 24 |[39m type [33mLayoutConfig[39m[33m<[39m[33mRoute[39m [36mextends[39m [33mLayoutRoutes[39m [33m=[39m [33mLayoutRoutes[39m[33m>[39m [33m=[39m {
+[31m[1m>[22m[39m[90m 25 |[39m   [36mdefault[39m[33m:[39m [33mReact[39m[33m.[39m[33mComponentType[39m[33m<[39m[33mLayoutProps[39m[33m<[39m[33mRoute[39m[33m>>[39m [33m|[39m ((props[33m:[39m [33mLayoutProps[39m[33m<[39m[33mRoute[39m[33m>[39m) [33m=>[39m [33mReact[39m[33m.[39m[33mReactNode[39m [33m|[39m [33mPromise[39m[33m<[39m[33mReact[39m[33m.[39m[33mReactNode[39m[33m>[39m [33m|[39m never [33m|[39m [36mvoid[39m [33m|[39m [33mPromise[39m[33m<[39m[36mvoid[39m[33m>[39m)
+ [90m    |[39m                                            [31m[1m^[22m[39m
+ [90m 26 |[39m   generateStaticParams[33m?[39m[33m:[39m (props[33m:[39m { params[33m:[39m [33mParamMap[39m[[33mRoute[39m] }) [33m=>[39m [33mPromise[39m[33m<[39m[33many[39m[][33m>[39m [33m|[39m any[]
+ [90m 27 |[39m   generateMetadata[33m?[39m[33m:[39m (
+ [90m 28 |[39m     props[33m:[39m { params[33m:[39m [33mPromise[39m[33m<[39m[33mParamMap[39m[[33mRoute[39m][33m>[39m } [33m&[39m any[33m,[39m[0m
+Next.js build worker exited with code: 1 and signal: null

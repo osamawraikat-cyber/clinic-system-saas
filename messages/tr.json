@@ -1,0 +1,152 @@
+{
+    "Features": {
+        "title": "Kliniğinizi yönetmek için ihtiyacınız olan her şey",
+        "subtitle": "Kağıt işlerini ve dağınık araçları değiştirmek için tasarlanmış güçlü özellikler.",
+        "items": {
+            "records": {
+                "title": "Hasta Kayıtları",
+                "desc": "Güvenli, aranabilir tıbbi geçmişi, ziyaretleri ve belgeleri tek bir yerde saklayın."
+            },
+            "scheduling": {
+                "title": "Akıllı Planlama",
+                "desc": "Randevulara gelmemeyi azaltmak için otomatik SMS hatırlatıcıları olan sürükle-bırak takvimi."
+            },
+            "billing": {
+                "title": "Faturalandırma",
+                "desc": "Profesyonel faturalar oluşturun, ödemeleri takip edin ve sigorta taleplerini yönetin."
+            },
+            "mobile": {
+                "title": "Mobil Dostu",
+                "desc": "Kliniğinize her cihazdan erişin. Hareket halindeki doktorlar için mükemmel."
+            },
+            "notes": {
+                "title": "Klinik Notlar",
+                "desc": "Teşhis, reçeteler ve prosedür notları için özel şablonlar."
+            },
+            "security": {
+                "title": "Banka Düzeyinde Güvenlik",
+                "desc": "Verileriniz şifrelenir. HIPAA uyumlu mimari."
+            }
+        }
+    },
+    "Footer": {
+        "tagline": "İleri görüşlü klinikler için modern işletim sistemi.",
+        "product": "Ürün",
+        "company": "Şirket",
+        "legal": "Yasal",
+        "rights": "SehaTech. Tüm hakları saklıdır.",
+        "about": "Hakkında",
+        "blog": "Blog",
+        "careers": "Kariyer",
+        "privacy": "Gizlilik Politikası",
+        "terms": "Hizmet Şartları",
+        "demo": "Demo"
+    },
+    "Sidebar": {
+        "dashboard": "Panel",
+        "patients": "Hastalar",
+        "appointments": "Randevular",
+        "visits": "Ziyaretler",
+        "invoices": "Faturalar",
+        "procedures": "Prosedürler",
+        "settings": "Ayarlar",
+        "logout": "Çıkış Yap"
+    },
+    "Navbar": {
+        "features": "Özellikler",
+        "pricing": "Fiyatlandırma",
+        "login": "Giriş Yap",
+        "getStarted": "Başlayın"
+    },
+    "Hero": {
+        "scrollingBadge": "🚀 MENA Bölgesinin 1 Numaralı Klinik Yönetim Yazılımı",
+        "headlinePrefix": "Modern Klinikler İçin",
+        "headlineSuffix": "İşletim Sistemi",
+        "subhead": "Randevuları düzenle, hasta kayıtlarını yönet ve faturalandırmayı otomatikleştir. Verimliliğe önem veren doktorlar için.",
+        "ctaStart": "Ücretsiz Dene",
+        "ctaDemo": "Demoyu Gör",
+        "trustHipaa": "HIPAA Uyumlu",
+        "trustNoCard": "Kredi Kartı Gerekmez",
+        "trustSetup": "2 dakikada kurulum"
+    },
+    "Pricing": {
+        "title": "Basit, şeffaf fiyatlandırma",
+        "subtitle": "Kliniğinize boyuna uygun planı seçin. Gizli ücret yok.",
+        "starter": "Başlangıç",
+        "starterDesc": "Yeni özel klinikler için mükemmel.",
+        "free": "Ücretsiz",
+        "forever": "ömür boyu",
+        "pro": "Profesyonel",
+        "proDesc": "Personeli olan büyüyen klinikler için.",
+        "mostPopular": "En Popüler",
+        "month": "aylık",
+        "enterprise": "Kurumsal",
+        "enterpriseDesc": "Büyük merkezler ve hastaneler için.",
+        "custom": "Özel",
+        "features": {
+            "user1": "1 Kullanıcı Hesabı",
+            "user3": "3 Kullanıcı Hesabı (Dr + Personel)",
+            "patients20": "20 Hastaya Kadar",
+            "patients500": "500 Hastaya Kadar",
+            "unlimited": "Sınırsız Kullanıcı"
+        },
+        "ctaFree": "Ücretsiz Başla",
+        "ctaPro": "Şimdi Başla",
+        "ctaSales": "Satışla İletişime Geç"
+    },
+    "ForgotPassword": {
+        "title": "Şifrenizi mi unuttunuz?",
+        "subtitle": "E-postanızı girin, size 6 haneli bir kod gönderelim.",
+        "emailLabel": "E-posta Adresi",
+        "emailPlaceholder": "doktor@klinik.com",
+        "sendCode": "Kod Gönder",
+        "sending": "Gönderiliyor...",
+        "backToLogin": "Girişe Dön",
+        "codeSentTitle": "Kod Gönderildi!",
+        "codeSentDesc": "6 haneli doğrulama kodu için gelen kutunuzu kontrol edin.",
+        "enterCodeTitle": "Doğrulama Kodunu Girin",
+        "enterCodeSubtitle": "6 haneli bir kod gönderdik:",
+        "verifyCode": "Kodu Doğrula",
+        "verifying": "Doğrulanıyor...",
+        "invalidCode": "Geçersiz veya süresi dolmuş kod",
+        "codeExpired": "Bu kodun süresi dolmuş. Lütfen yeni bir kod isteyin.",
+        "codeVerified": "Kod doğrulandı! Şimdi yeni şifrenizi belirleyin.",
+        "resendCode": "Kod almadınız mı? Tekrar gönder",
+        "useAnotherEmail": "Farklı bir e-posta kullan",
+        "newPasswordTitle": "Yeni Şifre Belirle",
+        "newPasswordSubtitle": "Aşağıya yeni şifrenizi girin.",
+        "newPassword": "Yeni Şifre",
+        "confirmPassword": "Şifreyi Onayla",
+        "updatePassword": "Şifreyi Güncelle",
+        "updating": "Güncelleniyor...",
+        "passwordMismatch": "Şifreler eşleşmiyor",
+        "passwordTooShort": "Şifre en az 6 karakter olmalıdır",
+        "successTitle": "Şifre Güncellendi!",
+        "successDesc": "Şifreniz başarıyla güncellendi.",
+        "redirecting": "Girişe yönlendiriliyorsunuz...",
+        "errorTitle": "Hata",
+        "errorDesc": "Bir şeyler ters gitti. Lütfen tekrar deneyin."
+    },
+    "ResetPassword": {
+        "title": "Şifrenizi Sıfırlayın",
+        "subtitle": "Aşağıya yeni şifrenizi girin.",
+        "newPassword": "Yeni Şifre",
+        "confirmPassword": "Şifreyi Onayla",
+        "updatePassword": "Şifreyi Güncelle",
+        "updating": "Güncelleniyor...",
+        "successTitle": "Şifre Güncellendi!",
+        "successDesc": "Şifreniz başarıyla güncellendi.",
+        "redirecting": "Girişe yönlendiriliyorsunuz...",
+        "goToLogin": "Girişe Git",
+        "invalidLink": "Bu sıfırlama bağlantısı geçersiz veya süresi dolmuş.",
+        "invalidLinkTitle": "Geçersiz Bağlantı",
+        "requestNewLink": "Yeni Bağlantı İste",
+        "passwordMismatch": "Şifreler eşleşmiyor",
+        "passwordTooShort": "Şifre en az 6 karakter olmalıdır",
+        "errorTitle": "Hata",
+        "errorDesc": "Bir şeyler ters gitti. Lütfen tekrar deneyin."
+    },
+    "Login": {
+        "forgotPassword": "Şifrenizi mi unuttunuz?"
+    }
+}
