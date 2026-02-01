@@ -19,6 +19,7 @@ import {
 } from '@/components/ui/select'
 import { toast } from 'sonner'
 import { User, Phone, Calendar, Heart, FileText, Save, Info } from 'lucide-react'
+import { UpgradeDialog } from '@/components/upgrade-dialog'
 
 export default function AddPatientPage() {
     const router = useRouter()
@@ -89,6 +90,25 @@ export default function AddPatientPage() {
         setFormData(prev => ({ ...prev, [name]: value }))
     }
 
+    const [showUpgrade, setShowUpgrade] = useState(false)
+
+    // Check Limit Function
+    const checkLimit = async () => {
+        // Here we would ideally check against a 'subscription' or 'clinic_meta' table
+        // For now, we'll simulate a free tier limit of 5 patients
+        const { count } = await supabase
+            .from('patients')
+            .select('*', { count: 'exact', head: true })
+            .eq('clinic_id', clinicId)
+
+        // Hardcoded limit for Demo
+        const FREE_LIMIT = 5
+        if (count && count >= FREE_LIMIT) {
+            return false
+        }
+        return true
+    }
+
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
         setLoading(true)
@@ -96,6 +116,14 @@ export default function AddPatientPage() {
         try {
             if (!clinicId) {
                 throw new Error('Clinic ID not found. Please try refreshing the page.')
+            }
+
+            // Check Limit
+            const canAdd = await checkLimit()
+            if (!canAdd) {
+                setShowUpgrade(true)
+                setLoading(false)
+                return
             }
 
             // Clean the data: convert empty strings to null for optional fields
@@ -142,6 +170,12 @@ export default function AddPatientPage() {
 
     return (
         <div className="max-w-4xl mx-auto p-1">
+            <UpgradeDialog
+                open={showUpgrade}
+                onOpenChange={setShowUpgrade}
+                limitType="patient"
+            />
+
             {/* Loading State */}
             {!clinicId && (
                 <div className="mb-4 p-4 bg-amber-50 border border-amber-200 rounded-md text-sm text-amber-800">

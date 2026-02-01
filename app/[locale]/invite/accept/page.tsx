@@ -6,6 +6,8 @@ import Link from "next/link"
 import { redirect } from "next/navigation"
 import { createClient } from "@/utils/supabase/server"
 
+export const dynamic = 'force-dynamic'
+
 interface AcceptInvitePageProps {
     searchParams: Promise<{ token?: string }>
 }

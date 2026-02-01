@@ -152,6 +152,15 @@ export function AppSidebar() {
                 </SidebarGroup>
             </SidebarContent>
             <SidebarFooter>
+                <div className="p-2 group-data-[collapsible=icon]:hidden">
+                    <Button
+                        className="w-full bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white shadow-md border-0"
+                        onClick={() => router.push('/settings')}
+                    >
+                        <CreditCard className="mr-2 h-4 w-4" />
+                        Upgrade to Pro
+                    </Button>
+                </div>
                 <div className="flex items-center gap-2 p-2 group-data-[collapsible=icon]:justify-center text-sidebar-foreground border-t border-white/10">
                     <Avatar className="h-8 w-8 border border-sidebar-border">
                         <AvatarImage src="/avatars/01.png" alt="@osama" />
