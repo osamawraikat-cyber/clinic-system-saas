@@ -1,6 +1,8 @@
 import { supabase } from '@/lib/supabase'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Users, FileText, DollarSign, Calendar } from 'lucide-react'
+import { RevenueChart } from '@/components/dashboard/revenue-chart'
+import { OnboardingSteps } from '@/components/dashboard/onboarding-steps'
 
 export const revalidate = 0
 
@@ -36,9 +38,36 @@ export default async function Page() {
         .select('*', { count: 'exact', head: true })
         .eq('appointment_date', today)
 
+    // Fetch 6-month revenue data
+    const sixMonthsAgo = new Date()
+    sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 6)
+
+    const { data: historicalInvoices } = await supabase
+        .from('invoices')
+        .select('created_at, amount_paid')
+        .eq('status', 'paid')
+        .gte('created_at', sixMonthsAgo.toISOString())
+        .order('created_at', { ascending: true })
+
+    // Group by month/day for the chart
+    const revenueMap = new Map<string, number>()
+    historicalInvoices?.forEach(inv => {
+        const date = new Date(inv.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
+        revenueMap.set(date, (revenueMap.get(date) || 0) + Number(inv.amount_paid))
+    })
+
+    const chartData = Array.from(revenueMap.entries()).map(([date, amount]) => ({
+        date,
+        amount
+    }))
+
     return (
         <div className="space-y-4">
             <h2 className="text-3xl font-bold tracking-tight">Dashboard</h2>
+
+            {/* Onboarding for New Clinics (0 Patients) */}
+            {(!patientCount || patientCount === 0) && <OnboardingSteps />}
+
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
                 <Card className="bg-chart-1/20 border-chart-1/50 shadow-sm transition-all hover:shadow-md">
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -91,6 +120,11 @@ export default async function Page() {
                         <p className="text-xs font-medium text-muted-foreground mt-1">All-time collected</p>
                     </CardContent>
                 </Card>
+            </div>
+
+            {/* Revenue Trend Chart */}
+            <div className="grid grid-cols-1 lg:grid-cols-4 gap-4">
+                <RevenueChart data={chartData} />
             </div>
         </div>
     )
