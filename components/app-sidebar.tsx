@@ -1,6 +1,6 @@
 'use client'
 
-import { Calendar, Home, Settings, Users, FileText, Activity, Stethoscope, LogOut } from "lucide-react"
+import { Calendar, Home, Settings, Users, FileText, Activity, Stethoscope, LogOut, CreditCard } from "lucide-react"
 import { usePathname, useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { createBrowserClient } from "@supabase/ssr"
@@ -52,6 +52,11 @@ const items = [
         title: "Invoices",
         url: "/invoices",
         icon: FileText,
+    },
+    {
+        title: "Billing",
+        url: "/billing",
+        icon: CreditCard,
     },
     {
         title: "Settings",

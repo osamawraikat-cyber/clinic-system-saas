@@ -4,6 +4,7 @@ export const dynamic = 'force-dynamic'
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
+import Link from 'next/link'
 import { createBrowserClient } from '@supabase/ssr'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -104,6 +105,14 @@ export default function LoginPage() {
                             {loading ? 'Signing in...' : 'Sign In'}
                         </Button>
                     </form>
+
+
+                    <div className="mt-6 text-center text-sm">
+                        <span className="text-muted-foreground">Don't have an account? </span>
+                        <Link href="/signup" className="font-semibold text-emerald-600 hover:text-emerald-500">
+                            Sign up
+                        </Link>
+                    </div>
 
                     <div className="mt-6 rounded-lg bg-blue-50 p-4 text-sm text-blue-800">
                         <p className="font-medium">Demo Credentials:</p>
