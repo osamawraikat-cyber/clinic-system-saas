@@ -4,6 +4,7 @@ import { useState } from "react"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import * as z from "zod"
+import { useTranslations } from "next-intl"
 import { Button } from "@/components/ui/button"
 import {
     Dialog,
@@ -38,6 +39,7 @@ interface InviteMemberDialogProps {
 }
 
 export function InviteMemberDialog({ clinicId }: InviteMemberDialogProps) {
+    const t = useTranslations('InviteMember')
     const [open, setOpen] = useState(false)
     const [isPending, setIsPending] = useState(false)
 
@@ -57,12 +59,12 @@ export function InviteMemberDialog({ clinicId }: InviteMemberDialogProps) {
             if (result.error) {
                 toast.error(result.error)
             } else {
-                toast.success("Invitation sent successfully")
+                toast.success(t('success'))
                 setOpen(false)
                 form.reset()
             }
         } catch (error) {
-            toast.error("An unexpected error occurred")
+            toast.error(t('error'))
             console.error(error)
         } finally {
             setIsPending(false)
@@ -74,14 +76,14 @@ export function InviteMemberDialog({ clinicId }: InviteMemberDialogProps) {
             <DialogTrigger asChild>
                 <Button>
                     <Plus className="mr-2 h-4 w-4" />
-                    Invite Member
+                    {t('trigger')}
                 </Button>
             </DialogTrigger>
             <DialogContent className="sm:max-w-[425px]">
                 <DialogHeader>
-                    <DialogTitle>Invite Team Member</DialogTitle>
+                    <DialogTitle>{t('title')}</DialogTitle>
                     <DialogDescription>
-                        Invite a new member to your clinic team. They will receive an email with instructions to join.
+                        {t('description')}
                     </DialogDescription>
                 </DialogHeader>
                 <Form {...form}>
@@ -91,9 +93,9 @@ export function InviteMemberDialog({ clinicId }: InviteMemberDialogProps) {
                             name="email"
                             render={({ field }) => (
                                 <FormItem>
-                                    <FormLabel>Email</FormLabel>
+                                    <FormLabel>{t('emailLabel')}</FormLabel>
                                     <FormControl>
-                                        <Input placeholder="doctor@example.com" {...field} />
+                                        <Input placeholder={t('emailPlaceholder')} {...field} />
                                     </FormControl>
                                     <FormMessage />
                                 </FormItem>
@@ -104,18 +106,18 @@ export function InviteMemberDialog({ clinicId }: InviteMemberDialogProps) {
                             name="role"
                             render={({ field }) => (
                                 <FormItem>
-                                    <FormLabel>Role</FormLabel>
+                                    <FormLabel>{t('roleLabel')}</FormLabel>
                                     <Select onValueChange={field.onChange} defaultValue={field.value}>
                                         <FormControl>
                                             <SelectTrigger>
-                                                <SelectValue placeholder="Select a role" />
+                                                <SelectValue placeholder={t('rolePlaceholder')} />
                                             </SelectTrigger>
                                         </FormControl>
                                         <SelectContent>
                                             <SelectItem value="admin">Admin</SelectItem>
-                                            <SelectItem value="doctor">Doctor</SelectItem>
-                                            <SelectItem value="nurse">Nurse</SelectItem>
-                                            <SelectItem value="receptionist">Receptionist</SelectItem>
+                                            <SelectItem value="doctor">{t('roles.doctor')}</SelectItem>
+                                            <SelectItem value="nurse">{t('roles.nurse')}</SelectItem>
+                                            <SelectItem value="receptionist">{t('roles.receptionist')}</SelectItem>
                                             <SelectItem value="member">Member</SelectItem>
                                         </SelectContent>
                                     </Select>
@@ -126,7 +128,7 @@ export function InviteMemberDialog({ clinicId }: InviteMemberDialogProps) {
                         <DialogFooter>
                             <Button type="submit" disabled={isPending}>
                                 {isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                                Send Invitation
+                                {t('send')}
                             </Button>
                         </DialogFooter>
                     </form>

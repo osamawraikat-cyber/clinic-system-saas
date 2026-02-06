@@ -59,10 +59,10 @@ export function UpgradeDialog({ open, onOpenChange, limitType }: UpgradeDialogPr
                 <DialogFooter className="flex-col sm:justify-start gap-2">
                     <Button
                         className="w-full bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white border-0"
-                        onClick={() => router.push('/settings')}
+                        onClick={() => router.push('/billing')}
                     >
                         <CreditCard className="mr-2 h-4 w-4" />
-                        Upgrade Now - $29/mo
+                        Upgrade Now - $49/mo
                     </Button>
                     <Button
                         variant="ghost"

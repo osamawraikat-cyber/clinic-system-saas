@@ -1,20 +1,29 @@
-import { supabase } from '@/lib/supabase'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { createClient } from '@/lib/supabase-server'
 import { Button } from '@/components/ui/button'
 import Link from 'next/link'
 import { ArrowLeft } from 'lucide-react'
+import { PatientDetailView } from '@/components/patients/patient-detail-view'
 
 export const revalidate = 0
 
 export default async function PatientDetailPage({ params }: { params: Promise<{ id: string }> }) {
     const { id } = await params
-    const { data: patient, error } = await supabase
-        .from('patients')
-        .select('*')
-        .eq('id', id)
-        .single()
+    const supabase = await createClient()
 
-    if (error || !patient) {
+    // Fetch all related data in parallel
+    const [
+        { data: patient, error: patientError },
+        { data: visits },
+        { data: appointments },
+        { data: invoices }
+    ] = await Promise.all([
+        supabase.from('patients').select('*').eq('id', id).single(),
+        supabase.from('visits').select('*').eq('patient_id', id).order('visit_date', { ascending: false }),
+        supabase.from('appointments').select('*').eq('patient_id', id).order('appointment_date', { ascending: false }),
+        supabase.from('invoices').select('*').eq('patient_id', id).order('created_at', { ascending: false })
+    ])
+
+    if (patientError || !patient) {
         return <div className="text-red-500">Patient not found</div>
     }
 
@@ -26,53 +35,16 @@ export default async function PatientDetailPage({ params }: { params: Promise<{ 
                 </Button>
             </Link>
 
-            <Card>
-                <CardHeader>
-                    <CardTitle>{patient.full_name}</CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div>
-                            <p className="text-sm font-medium text-muted-foreground">Phone</p>
-                            <p>{patient.phone}</p>
-                        </div>
-                        <div>
-                            <p className="text-sm font-medium text-muted-foreground">National ID</p>
-                            <p>{patient.national_id || '-'}</p>
-                        </div>
-                        <div>
-                            <p className="text-sm font-medium text-muted-foreground">Date of Birth</p>
-                            <p>{patient.date_of_birth || '-'}</p>
-                        </div>
-                        <div>
-                            <p className="text-sm font-medium text-muted-foreground">Gender</p>
-                            <p>{patient.gender || '-'}</p>
-                        </div>
-                        <div>
-                            <p className="text-sm font-medium text-muted-foreground">Blood Group</p>
-                            <p>{patient.blood_group || '-'}</p>
-                        </div>
-                        <div>
-                            <p className="text-sm font-medium text-muted-foreground">Address</p>
-                            <p>{patient.address || '-'}</p>
-                        </div>
-                    </div>
+            <div className="flex items-center justify-between">
+                <h2 className="text-3xl font-bold tracking-tight">{patient.full_name}</h2>
+            </div>
 
-                    {patient.medical_history && (
-                        <div>
-                            <p className="text-sm font-medium text-muted-foreground">Medical History</p>
-                            <p className="mt-1">{patient.medical_history}</p>
-                        </div>
-                    )}
-
-                    {patient.allergies && (
-                        <div>
-                            <p className="text-sm font-medium text-muted-foreground">Allergies</p>
-                            <p className="mt-1">{patient.allergies}</p>
-                        </div>
-                    )}
-                </CardContent>
-            </Card>
+            <PatientDetailView
+                patient={patient}
+                visits={visits || []}
+                appointments={appointments || []}
+                invoices={invoices || []}
+            />
         </div>
     )
 }

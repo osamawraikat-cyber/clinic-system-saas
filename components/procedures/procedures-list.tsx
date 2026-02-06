@@ -129,10 +129,12 @@ export function ProceduresList({ procedures, currency }: ProceduresListProps) {
                                                 </Button>
                                             </DropdownMenuTrigger>
                                             <DropdownMenuContent align="end">
-                                                <DropdownMenuItem>
-                                                    <Edit className="mr-2 h-4 w-4" />
-                                                    Edit
-                                                </DropdownMenuItem>
+                                                <Link href={`/procedures/${procedure.id}/edit`}>
+                                                    <DropdownMenuItem>
+                                                        <Edit className="mr-2 h-4 w-4" />
+                                                        Edit
+                                                    </DropdownMenuItem>
+                                                </Link>
                                                 <DropdownMenuItem className="text-red-600 focus:text-red-600">
                                                     <Trash2 className="mr-2 h-4 w-4" />
                                                     Delete

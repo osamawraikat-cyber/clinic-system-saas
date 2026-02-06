@@ -87,11 +87,11 @@ export function AppSidebar() {
             url: "/invoices",
             icon: FileText,
         },
-        // {
-        //     title: t('billing'), // Assuming billing key exists or fallback
-        //     url: "/billing",
-        //     icon: CreditCard,
-        // },
+        {
+            title: t('billing'),
+            url: "/billing",
+            icon: CreditCard,
+        },
         {
             title: t('settings'),
             url: "/settings",
@@ -123,7 +123,7 @@ export function AppSidebar() {
                         <Activity className="size-4" />
                     </div>
                     <div className="grid flex-1 text-left text-sm leading-tight group-data-[collapsible=icon]:hidden">
-                        <span className="truncate font-semibold">SehaTech</span>
+                        <span className="truncate font-semibold">ZahiFlow</span>
                         <span className="truncate text-xs text-sidebar-foreground/70">Management System</span>
                     </div>
                 </div>
@@ -155,7 +155,7 @@ export function AppSidebar() {
                 <div className="p-2 group-data-[collapsible=icon]:hidden">
                     <Button
                         className="w-full bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white shadow-md border-0"
-                        onClick={() => router.push('/settings')}
+                        onClick={() => router.push('/billing')}
                     >
                         <CreditCard className="mr-2 h-4 w-4" />
                         Upgrade to Pro

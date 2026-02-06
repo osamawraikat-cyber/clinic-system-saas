@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
-import { supabase } from '@/lib/supabase'
+import { createBrowserClient } from '@supabase/ssr'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -25,10 +25,15 @@ type LineItem = {
 }
 
 export default function CreateInvoicePage() {
+    const supabase = createBrowserClient(
+        process.env.NEXT_PUBLIC_SUPABASE_URL!,
+        process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+    )
     const router = useRouter()
     const [loading, setLoading] = useState(false)
     const [patients, setPatients] = useState<any[]>([])
     const [visits, setVisits] = useState<any[]>([])
+    const [procedures, setProcedures] = useState<any[]>([])
     const [loadingData, setLoadingData] = useState(true)
     const [formData, setFormData] = useState({
         patient_id: '',
@@ -47,6 +52,14 @@ export default function CreateInvoicePage() {
                 .order('full_name')
 
             if (patientsData) setPatients(patientsData)
+
+            const { data: proceduresData } = await supabase
+                .from('procedures')
+                .select('id, name, default_cost')
+                .order('name')
+
+            if (proceduresData) setProcedures(proceduresData)
+
             setLoadingData(false)
         }
         loadData()
@@ -86,6 +99,16 @@ export default function CreateInvoicePage() {
         updated[index] = { ...updated[index], [field]: value }
         setLineItems(updated)
     }
+
+    const handleProcedureSelect = (index: number, procedureId: string) => {
+        const procedure = procedures.find(p => p.id === procedureId)
+        if (procedure) {
+            updateLineItem(index, 'description', procedure.name)
+            updateLineItem(index, 'unit_price', procedure.default_cost)
+        }
+    }
+
+
 
     const calculateTotal = () => {
         return lineItems.reduce((sum, item) => sum + (item.quantity * item.unit_price), 0)
@@ -189,14 +212,14 @@ export default function CreateInvoicePage() {
                             <div className="space-y-2">
                                 <Label>Link to Visit (Optional)</Label>
                                 <Select
-                                    value={formData.visit_id}
-                                    onValueChange={(val) => handleSelectChange('visit_id', val)}
+                                    value={formData.visit_id || '_none'}
+                                    onValueChange={(val) => handleSelectChange('visit_id', val === '_none' ? '' : val)}
                                 >
                                     <SelectTrigger>
                                         <SelectValue placeholder="Select visit or skip" />
                                     </SelectTrigger>
                                     <SelectContent>
-                                        <SelectItem value="">None</SelectItem>
+                                        <SelectItem value="_none">None</SelectItem>
                                         {visits.map((visit) => (
                                             <SelectItem key={visit.id} value={visit.id}>
                                                 {new Date(visit.visit_date).toLocaleDateString()} - {visit.symptoms?.substring(0, 30) || 'No symptoms'}
@@ -220,12 +243,32 @@ export default function CreateInvoicePage() {
                             {lineItems.map((item, index) => (
                                 <Card key={index} className="p-4">
                                     <div className="grid grid-cols-12 gap-3">
-                                        <div className="col-span-12 md:col-span-6">
+                                        <div className="col-span-12 md:col-span-4">
+                                            {/* Procedure Select - Helper */}
+                                            <Select onValueChange={(val) => {
+                                                const procedure = procedures.find(p => p.id === val)
+                                                if (procedure) {
+                                                    updateLineItem(index, 'description', procedure.name)
+                                                    updateLineItem(index, 'unit_price', procedure.default_cost)
+                                                }
+                                            }}>
+                                                <SelectTrigger>
+                                                    <SelectValue placeholder="Select Procedure..." />
+                                                </SelectTrigger>
+                                                <SelectContent>
+                                                    {procedures.map((proc) => (
+                                                        <SelectItem key={proc.id} value={proc.id}>
+                                                            {proc.name} - ${proc.default_cost}
+                                                        </SelectItem>
+                                                    ))}
+                                                </SelectContent>
+                                            </Select>
+                                        </div>
+                                        <div className="col-span-12 md:col-span-3">
                                             <Input
-                                                placeholder="Description (e.g., Consultation, X-Ray)"
+                                                placeholder="Description"
                                                 value={item.description}
                                                 onChange={(e) => updateLineItem(index, 'description', e.target.value)}
-                                                required
                                             />
                                         </div>
                                         <div className="col-span-6 md:col-span-2">
@@ -238,7 +281,7 @@ export default function CreateInvoicePage() {
                                                 required
                                             />
                                         </div>
-                                        <div className="col-span-6 md:col-span-3">
+                                        <div className="col-span-6 md:col-span-2">
                                             <Input
                                                 type="number"
                                                 placeholder="Price"

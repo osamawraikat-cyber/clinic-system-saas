@@ -17,7 +17,7 @@ export function Hero() {
             <div className="absolute bottom-0 left-1/4 w-80 h-80 bg-gradient-to-tr from-blue-400/15 to-emerald-400/15 rounded-full blur-3xl -z-10" />
 
             <div className="container px-4 md:px-6">
-                <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+                <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-center">
                     <div className="flex flex-col items-center lg:items-start text-center lg:text-start space-y-8">
 
                         {/* Badge */}
@@ -108,7 +108,7 @@ export function Hero() {
                                 <div className="flex-1 mx-4">
                                     <div className="bg-white dark:bg-slate-700 rounded-md px-3 py-1 text-xs text-slate-400 dark:text-slate-500 flex items-center gap-2">
                                         <Shield className="w-3 h-3" />
-                                        <span>app.sehatech.com/dashboard</span>
+                                        <span>app.zahiflow.com/dashboard</span>
                                     </div>
                                 </div>
                             </div>

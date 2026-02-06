@@ -5,6 +5,10 @@ import { revalidatePatientsPath } from '@/actions/revalidate'
 import { useState, useEffect } from 'react'
 import { useRouter } from '@/i18n/navigation'
 import { createBrowserClient } from '@supabase/ssr'
+import { useForm } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
+import * as z from 'zod'
+
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -21,27 +25,49 @@ import { toast } from 'sonner'
 import { User, Phone, Calendar, Heart, FileText, Save, Info } from 'lucide-react'
 import { UpgradeDialog } from '@/components/upgrade-dialog'
 
+import { useTranslations } from 'next-intl'
+
+// Zod Schema
+const patientSchema = z.object({
+    full_name: z.string().min(2, 'Name must be at least 2 characters'),
+    phone: z.string().min(8, 'Phone number must be valid (at least 8 digits)'),
+    national_id: z.string().optional(),
+    date_of_birth: z.string().optional(),
+    gender: z.enum(['Male', 'Female', 'Other']).default('Male'),
+    address: z.string().optional(),
+    blood_group: z.string().optional(),
+    medical_history: z.string().optional(),
+    allergies: z.string().optional()
+})
+
+type PatientFormValues = z.infer<typeof patientSchema>
+
 export default function AddPatientPage() {
+    const t = useTranslations('Toasts')
     const router = useRouter()
     const [loading, setLoading] = useState(false)
     const [clinicId, setClinicId] = useState<string | null>(null)
+    const [showUpgrade, setShowUpgrade] = useState(false)
+
+    // Form Hook
+    const { register, handleSubmit, setValue, watch, formState: { errors } } = useForm<PatientFormValues>({
+        resolver: zodResolver(patientSchema),
+        defaultValues: {
+            full_name: '',
+            phone: '',
+            gender: 'Male',
+            national_id: '',
+            address: '',
+            medical_history: '',
+            allergies: '',
+            blood_group: ''
+        }
+    })
 
     const supabase = createBrowserClient(
         process.env.NEXT_PUBLIC_SUPABASE_URL!,
         process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
     )
-
-    const [formData, setFormData] = useState({
-        full_name: '',
-        national_id: '',
-        phone: '',
-        date_of_birth: '',
-        gender: 'Male',
-        address: '',
-        blood_group: '',
-        medical_history: '',
-        allergies: ''
-    })
 
     useEffect(() => {
         const getClinicId = async () => {
@@ -50,73 +76,45 @@ export default function AddPatientPage() {
                 const user = session?.user
 
                 if (authError || !user) {
-                    console.log('Session check failed:', authError)
                     router.push('/login')
                     return
                 }
 
-                const { data: memberData, error: memberError } = await supabase
+                const { data: memberData } = await supabase
                     .from('clinic_members')
                     .select('clinic_id')
                     .eq('user_id', user.id)
                     .maybeSingle()
 
-                if (memberError) {
-                    console.error('Error fetching clinic member:', memberError)
-                } else if (memberData) {
+                if (memberData) {
                     setClinicId(memberData.clinic_id)
-                } else {
-                    console.error('No clinic membership found')
                 }
-            } catch (err: any) {
-                // Suppress "Auth session missing" error as it just means we need to redirect
-                if (err?.message?.includes('Auth session missing') || err?.name === 'AuthSessionMissingError') {
-                    console.log('Session missing, redirecting to login...')
-                } else {
-                    console.error('Exception fetching clinic:', err)
-                }
-                router.push('/login')
+            } catch (err) {
+                console.error(err)
             }
         }
         getClinicId()
     }, [])
 
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-        const { name, value } = e.target
-        setFormData(prev => ({ ...prev, [name]: value }))
-    }
-
-    const handleSelectChange = (name: string, value: string) => {
-        setFormData(prev => ({ ...prev, [name]: value }))
-    }
-
-    const [showUpgrade, setShowUpgrade] = useState(false)
-
     // Check Limit Function
     const checkLimit = async () => {
-        // Here we would ideally check against a 'subscription' or 'clinic_meta' table
-        // For now, we'll simulate a free tier limit of 5 patients
         const { count } = await supabase
             .from('patients')
             .select('*', { count: 'exact', head: true })
             .eq('clinic_id', clinicId)
 
-        // Hardcoded limit for Demo
-        const FREE_LIMIT = 5
+        const FREE_LIMIT = 20
         if (count && count >= FREE_LIMIT) {
             return false
         }
         return true
     }
 
-    const handleSubmit = async (e: React.FormEvent) => {
-        e.preventDefault()
+    const onSubmit = async (data: PatientFormValues) => {
         setLoading(true)
 
         try {
-            if (!clinicId) {
-                throw new Error('Clinic ID not found. Please try refreshing the page.')
-            }
+            if (!clinicId) throw new Error('Clinic ID not found.')
 
             // Check Limit
             const canAdd = await checkLimit()
@@ -126,43 +124,36 @@ export default function AddPatientPage() {
                 return
             }
 
-            // Clean the data: convert empty strings to null for optional fields
             const cleanedData = {
-                clinic_id: clinicId, // Explicitly include clinic_id
-                full_name: formData.full_name,
-                phone: formData.phone,
-                national_id: formData.national_id || null,
-                date_of_birth: formData.date_of_birth || null,
-                gender: formData.gender || null,
-                address: formData.address || null,
-                blood_group: formData.blood_group || null,
-                medical_history: formData.medical_history || null,
-                allergies: formData.allergies || null,
+                clinic_id: clinicId,
+                full_name: data.full_name,
+                phone: data.phone,
+                national_id: data.national_id || null,
+                date_of_birth: data.date_of_birth || null,
+                gender: data.gender || null,
+                address: data.address || null,
+                blood_group: data.blood_group && data.blood_group !== 'Unknown' ? data.blood_group : null,
+                medical_history: data.medical_history || null,
+                allergies: data.allergies || null,
             }
 
-            const { data, error } = await supabase
+            const { error } = await supabase
                 .from('patients')
                 .insert([cleanedData])
                 .select()
 
-            if (error) {
-                console.error('Supabase error:', error)
-                throw new Error(error.message || 'Failed to register patient')
-            }
+            if (error) throw error
 
-            // Success!
-            toast.success('Patient registered successfully!', {
-                description: `${formData.full_name} has been added to the system.`
+            toast.success(t('patients.successAdd'), {
+                description: t('patients.successAddDesc', { name: data.full_name })
             })
 
-            await revalidatePatientsPath() // Clear cache
+            await revalidatePatientsPath()
             router.push('/patients')
             router.refresh()
         } catch (error: any) {
             console.error('Registration error:', error)
-            toast.error('Failed to register patient', {
-                description: error.message || 'An unexpected error occurred. Please try again.'
-            })
+            toast.error(error.message || t('patients.errorAdd'))
         } finally {
             setLoading(false)
         }
@@ -176,7 +167,6 @@ export default function AddPatientPage() {
                 limitType="patient"
             />
 
-            {/* Loading State */}
             {!clinicId && (
                 <div className="mb-4 p-4 bg-amber-50 border border-amber-200 rounded-md text-sm text-amber-800">
                     Loading clinic information...
@@ -188,7 +178,7 @@ export default function AddPatientPage() {
                 <p className="text-muted-foreground mt-1">Register a new patient to the clinic registry.</p>
             </div>
 
-            <form onSubmit={handleSubmit}>
+            <form onSubmit={handleSubmit(onSubmit)}>
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
                     {/* Left Panel: Primary Info */}
                     <div className="lg:col-span-7 space-y-6">
@@ -204,13 +194,11 @@ export default function AddPatientPage() {
                                     <Label htmlFor="full_name">Full Name *</Label>
                                     <Input
                                         id="full_name"
-                                        name="full_name"
-                                        required
-                                        value={formData.full_name}
-                                        onChange={handleChange}
                                         placeholder="e.g. John Doe"
-                                        className="bg-white dark:bg-slate-950"
+                                        {...register('full_name')}
+                                        className={errors.full_name ? 'border-red-500' : ''}
                                     />
+                                    {errors.full_name && <p className="text-xs text-red-500">{errors.full_name.message}</p>}
                                 </div>
 
                                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -220,24 +208,19 @@ export default function AddPatientPage() {
                                             <Phone className="absolute left-3 top-2.5 h-4 w-4 text-slate-400" />
                                             <Input
                                                 id="phone"
-                                                name="phone"
-                                                required
-                                                value={formData.phone}
-                                                onChange={handleChange}
                                                 placeholder="+123..."
-                                                className="pl-9 bg-white dark:bg-slate-950"
+                                                {...register('phone')}
+                                                className={`pl-9 ${errors.phone ? 'border-red-500' : ''}`}
                                             />
                                         </div>
+                                        {errors.phone && <p className="text-xs text-red-500">{errors.phone.message}</p>}
                                     </div>
                                     <div className="space-y-2">
                                         <Label htmlFor="national_id">National ID</Label>
                                         <Input
                                             id="national_id"
-                                            name="national_id"
-                                            value={formData.national_id}
-                                            onChange={handleChange}
                                             placeholder="Optional"
-                                            className="bg-white dark:bg-slate-950"
+                                            {...register('national_id')}
                                         />
                                     </div>
                                 </div>
@@ -249,21 +232,19 @@ export default function AddPatientPage() {
                                             <Calendar className="absolute left-3 top-2.5 h-4 w-4 text-slate-400" />
                                             <Input
                                                 id="date_of_birth"
-                                                name="date_of_birth"
                                                 type="date"
-                                                value={formData.date_of_birth}
-                                                onChange={handleChange}
-                                                className="pl-9 bg-white dark:bg-slate-950"
+                                                {...register('date_of_birth')}
+                                                className="pl-9"
                                             />
                                         </div>
                                     </div>
                                     <div className="space-y-2">
                                         <Label>Gender</Label>
                                         <Select
-                                            value={formData.gender}
-                                            onValueChange={(val) => handleSelectChange('gender', val)}
+                                            onValueChange={(val: any) => setValue('gender', val)}
+                                            defaultValue="Male"
                                         >
-                                            <SelectTrigger className="bg-white dark:bg-slate-950">
+                                            <SelectTrigger>
                                                 <SelectValue placeholder="Select gender" />
                                             </SelectTrigger>
                                             <SelectContent>
@@ -279,11 +260,9 @@ export default function AddPatientPage() {
                                     <Label htmlFor="address">Address</Label>
                                     <Textarea
                                         id="address"
-                                        name="address"
-                                        value={formData.address}
-                                        onChange={handleChange}
                                         placeholder="Home address..."
-                                        className="h-20 bg-white dark:bg-slate-950 resize-none"
+                                        {...register('address')}
+                                        className="h-20 resize-none"
                                     />
                                 </div>
                             </CardContent>
@@ -303,10 +282,9 @@ export default function AddPatientPage() {
                                 <div className="space-y-2">
                                     <Label>Blood Group</Label>
                                     <Select
-                                        value={formData.blood_group}
-                                        onValueChange={(val) => handleSelectChange('blood_group', val)}
+                                        onValueChange={(val) => setValue('blood_group', val)}
                                     >
-                                        <SelectTrigger className="bg-white dark:bg-slate-950">
+                                        <SelectTrigger>
                                             <SelectValue placeholder="Select blood group" />
                                         </SelectTrigger>
                                         <SelectContent>
@@ -327,11 +305,9 @@ export default function AddPatientPage() {
                                     <Label htmlFor="allergies">Allergies</Label>
                                     <Textarea
                                         id="allergies"
-                                        name="allergies"
-                                        value={formData.allergies}
-                                        onChange={handleChange}
                                         placeholder="Drug or food allergies..."
-                                        className="h-24 bg-white dark:bg-slate-950"
+                                        {...register('allergies')}
+                                        className="h-24"
                                     />
                                 </div>
 
@@ -339,11 +315,9 @@ export default function AddPatientPage() {
                                     <Label htmlFor="medical_history">Previous Conditions</Label>
                                     <Textarea
                                         id="medical_history"
-                                        name="medical_history"
-                                        value={formData.medical_history}
-                                        onChange={handleChange}
                                         placeholder="Chronic conditions, surgeries..."
-                                        className="h-32 bg-white dark:bg-slate-950"
+                                        {...register('medical_history')}
+                                        className="h-32"
                                     />
                                 </div>
                             </CardContent>
@@ -367,11 +341,6 @@ export default function AddPatientPage() {
                             >
                                 Cancel
                             </Button>
-                            {!clinicId && (
-                                <div className="mt-2 p-3 bg-amber-50 text-amber-800 text-sm rounded-md border border-amber-200">
-                                    Loading clinic information...
-                                </div>
-                            )}
                         </div>
                     </div>
                 </div>

@@ -51,7 +51,7 @@ export default function LoginPage() {
             }
 
             toast.success('Welcome back!', {
-                description: 'Successfully signed in to SehaTech'
+                description: 'Successfully signed in to ZahiFlow'
             })
 
             router.push('/dashboard')
@@ -74,7 +74,7 @@ export default function LoginPage() {
                         <Activity className="h-8 w-8 text-emerald-600" />
                     </div>
                     <div>
-                        <CardTitle className="text-3xl font-bold tracking-tight">SehaTech</CardTitle>
+                        <CardTitle className="text-3xl font-bold tracking-tight">ZahiFlow</CardTitle>
                         <CardDescription className="mt-2">
                             Sign in to access the management system
                         </CardDescription>

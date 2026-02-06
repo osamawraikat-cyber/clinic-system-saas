@@ -15,7 +15,7 @@ export function Footer() {
                     <div className="space-y-4">
                         <Link href="/" className="flex items-center gap-2 font-bold text-xl text-primary">
                             <Activity className="h-6 w-6" />
-                            <span>SehaTech</span>
+                            <span>ZahiFlow</span>
                         </Link>
                         <p className="text-sm text-muted-foreground">
                             {t('tagline')}

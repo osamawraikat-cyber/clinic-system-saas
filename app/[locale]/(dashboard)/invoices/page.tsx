@@ -1,4 +1,4 @@
-import { supabase } from '@/lib/supabase'
+import { createClient } from '@/lib/supabase-server'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
 import Link from 'next/link'
@@ -8,6 +8,8 @@ import { InvoicesList } from '@/components/invoices/invoices-list'
 export const revalidate = 0
 
 export default async function InvoicesPage() {
+    const supabase = await createClient()
+
     // Fetch Invoices and Clinic Currency
     const { data: invoices, error } = await supabase
         .from('invoices')
@@ -34,8 +36,13 @@ export default async function InvoicesPage() {
                 .select('clinic:clinics(currency)')
                 .eq('user_id', user.id)
                 .single()
-            if (userClinic?.clinic?.currency) {
-                currency = userClinic.clinic.currency
+
+            // Fix: Handle potential array or object response for foreign table
+            const clinicData = userClinic?.clinic as any
+            if (Array.isArray(clinicData)) {
+                if (clinicData[0]?.currency) currency = clinicData[0].currency
+            } else if (clinicData?.currency) {
+                currency = clinicData.currency
             }
         }
     }

@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { supabase } from '@/lib/supabase'
+import { createBrowserClient } from '@supabase/ssr'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -19,6 +19,10 @@ import { toast } from 'sonner'
 import { CalendarIcon } from 'lucide-react'
 
 export default function ScheduleAppointmentPage() {
+    const supabase = createBrowserClient(
+        process.env.NEXT_PUBLIC_SUPABASE_URL!,
+        process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+    )
     const router = useRouter()
     const [loading, setLoading] = useState(false)
     const [patients, setPatients] = useState<any[]>([])

@@ -1,4 +1,4 @@
-import { supabase } from '@/lib/supabase'
+import { createClient } from '@/lib/supabase-server'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
 import Link from 'next/link'
@@ -8,6 +8,7 @@ import { ProceduresList } from '@/components/procedures/procedures-list'
 export const revalidate = 0
 
 export default async function ProceduresPage() {
+    const supabase = await createClient()
     const { data: procedures, error } = await supabase
         .from('procedures')
         .select('*')

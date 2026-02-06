@@ -14,13 +14,13 @@ export function Navbar() {
             <div className="container flex h-16 items-center px-4 md:px-6">
                 <Link href="/" className="flex items-center gap-2 font-bold text-xl text-primary">
                     <Activity className="h-6 w-6" />
-                    <span>SehaTech</span>
+                    <span>ZahiFlow</span>
                 </Link>
-                <nav className="ms-auto flex items-center gap-4 sm:gap-6">
-                    <Link href="#features" className="text-sm font-medium hover:text-primary transition-colors">
+                <nav className="ms-auto flex items-center gap-2 sm:gap-6">
+                    <Link href="#features" className="text-sm font-medium hover:text-primary transition-colors hidden md:block">
                         {t('features')}
                     </Link>
-                    <Link href="#pricing" className="text-sm font-medium hover:text-primary transition-colors">
+                    <Link href="#pricing" className="text-sm font-medium hover:text-primary transition-colors hidden md:block">
                         {t('pricing')}
                     </Link>
                     <div className="flex items-center gap-2">

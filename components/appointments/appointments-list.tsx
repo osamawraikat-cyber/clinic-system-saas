@@ -46,6 +46,9 @@ import {
 } from '@/components/ui/select'
 import { cn } from '@/lib/utils'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
+import { updateAppointmentStatus } from '@/app/actions/appointments'
+import { toast } from 'sonner'
+import Link from 'next/link'
 
 interface Appointment {
     id: string
@@ -68,11 +71,28 @@ interface AppointmentsListProps {
 
 export function AppointmentsList({ initialAppointments }: AppointmentsListProps) {
     const locale = useLocale()
-    // const t = useTranslations('Appointments') // Commented out until we have translations
+    const t = useTranslations('Common')
     const [selectedDate, setSelectedDate] = useState(new Date())
+
+    // ...
+
+
     const [searchQuery, setSearchQuery] = useState('')
     const [statusFilter, setStatusFilter] = useState<string>('all')
     const [viewMode, setViewMode] = useState<'day' | 'week'>('day')
+
+    const handleStatusUpdate = async (id: string, status: 'scheduled' | 'completed' | 'cancelled' | 'no_show') => {
+        try {
+            const result = await updateAppointmentStatus(id, status)
+            if (result.success) {
+                toast.success(t('statusUpdated'))
+            } else {
+                toast.error(result.error || t('errorUpdatingStatus'))
+            }
+        } catch (e) {
+            toast.error(t('error'))
+        }
+    }
 
     // Filter appointments
     const filteredAppointments = initialAppointments.filter(app => {
@@ -342,27 +362,32 @@ export function AppointmentsList({ initialAppointments }: AppointmentsListProps)
                                                 <DropdownMenuTrigger asChild>
                                                     <Button variant="ghost" size="icon" className="h-8 w-8 hover:bg-slate-100 rounded-full">
                                                         <MoreHorizontal className="h-4 w-4 text-muted-foreground" />
-                                                        <span className="sr-only">Actions</span>
+                                                        <span className="sr-only">{t('actions')}</span>
                                                     </Button>
                                                 </DropdownMenuTrigger>
                                                 <DropdownMenuContent align="end" className="w-48">
-                                                    <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                                                    <DropdownMenuLabel>{t('actions')}</DropdownMenuLabel>
                                                     <DropdownMenuSeparator />
-                                                    <DropdownMenuItem>
-                                                        Edit details
-                                                    </DropdownMenuItem>
-                                                    <DropdownMenuItem>
-                                                        Reschedule
+
+                                                    {/* Reschedule could be a modal or link to edit page with focus */}
+                                                    <DropdownMenuItem onClick={() => handleStatusUpdate(appointment.id, 'scheduled')}>
+                                                        {t('reschedule')}
                                                     </DropdownMenuItem>
                                                     <DropdownMenuSeparator />
                                                     {appointment.status !== 'completed' && (
-                                                        <DropdownMenuItem className="text-emerald-600 focus:text-emerald-700">
-                                                            Mark as Completed
+                                                        <DropdownMenuItem
+                                                            className="text-emerald-600 focus:text-emerald-700"
+                                                            onClick={() => handleStatusUpdate(appointment.id, 'completed')}
+                                                        >
+                                                            {t('markCompleted')}
                                                         </DropdownMenuItem>
                                                     )}
                                                     {appointment.status !== 'cancelled' && (
-                                                        <DropdownMenuItem className="text-red-600 focus:text-red-700">
-                                                            Cancel Appointment
+                                                        <DropdownMenuItem
+                                                            className="text-red-600 focus:text-red-700"
+                                                            onClick={() => handleStatusUpdate(appointment.id, 'cancelled')}
+                                                        >
+                                                            {t('cancel')}
                                                         </DropdownMenuItem>
                                                     )}
                                                 </DropdownMenuContent>

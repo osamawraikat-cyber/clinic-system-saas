@@ -17,8 +17,15 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "SehaTech - Management System",
+  title: "ZahiFlow - Management System",
   description: "Professional clinic management system for patient care and administration",
+};
+
+export const viewport = {
+  themeColor: "#10b981",
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
 };
 
 export function generateStaticParams() {

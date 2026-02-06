@@ -1,0 +1,50 @@
+{
+    // TypeScript Performance
+    "typescript.tsserver.maxTsServerMemory": 4096,
+    "typescript.disableAutomaticTypeAcquisition": true,
+    // File Watching - Exclude heavy directories
+    "files.watcherExclude": {
+        "**/.git/objects/**": true,
+        "**/.git/subtree-cache/**": true,
+        "**/node_modules/**": true,
+        "**/.next/**": true,
+        "**/.vercel/**": true,
+        "**/dist/**": true,
+        "**/build/**": true,
+        "**/.cache/**": true
+    },
+    // Search Performance
+    "search.exclude": {
+        "**/node_modules": true,
+        "**/.next": true,
+        "**/.vercel": true,
+        "**/dist": true,
+        "**/build": true,
+        "**/.cache": true,
+        "**/package-lock.json": true,
+        "**/yarn.lock": true
+    },
+    // Editor Performance
+    "editor.quickSuggestions": {
+        "other": true,
+        "comments": false,
+        "strings": false
+    },
+    "editor.suggest.showStatusBar": true,
+    "editor.acceptSuggestionOnCommitCharacter": false,
+    // Disable heavy features if needed
+    "editor.minimap.enabled": false,
+    "editor.renderWhitespace": "selection",
+    "editor.codeLens": false,
+    // Git Performance
+    "git.enabled": true,
+    "git.autorefresh": false,
+    "git.autofetch": false,
+    // Extensions
+    "extensions.autoUpdate": false,
+    // Next.js specific
+    "files.exclude": {
+        "**/.next": true,
+        "**/node_modules": true
+    }
+}

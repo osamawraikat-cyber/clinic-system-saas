@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
-import { supabase } from '@/lib/supabase'
+import { createBrowserClient } from '@supabase/ssr'
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import {
@@ -19,6 +19,7 @@ import {
 import { useRouter } from '@/i18n/navigation'
 import Link from 'next/link'
 import { useTranslations } from 'next-intl'
+import { OnboardingSteps } from '@/components/dashboard/onboarding-steps'
 
 // Animation Variants
 const containerVariants: any = {
@@ -42,6 +43,10 @@ const itemVariants: any = {
 }
 
 export default function DashboardPage() {
+    const supabase = createBrowserClient(
+        process.env.NEXT_PUBLIC_SUPABASE_URL!,
+        process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+    )
     const router = useRouter()
     const t = useTranslations('Dashboard')
     const [loading, setLoading] = useState(true)
@@ -147,6 +152,21 @@ export default function DashboardPage() {
                 </div>
             </motion.div>
 
+            {/* Onboarding / Getting Started - Only show if stats are loaded */}
+            {!loading && (
+                <motion.div
+                    initial={{ opacity: 0, height: 0 }}
+                    animate={{ opacity: 1, height: 'auto' }}
+                    className="w-full"
+                >
+                    <OnboardingSteps
+                        hasPatients={stats.patientCount > 0}
+                        hasAppointments={stats.appointmentsToday > 0 || recentVisits.length > 0} // Loosely check if they have ever created an appointment/visit
+                        hasInvoices={stats.totalRevenue > 0 || stats.pendingAmount > 0}
+                    />
+                </motion.div>
+            )}
+
             {/* Stats Grid */}
             <motion.div
                 className="grid gap-4 md:grid-cols-2 lg:grid-cols-4"
@@ -166,7 +186,7 @@ export default function DashboardPage() {
                         <CardContent>
                             <div className="text-2xl font-bold text-slate-900 dark:text-white">{stats.patientCount}</div>
                             <p className="text-xs text-muted-foreground mt-1 flex items-center">
-                                <TrendingUp className="h-3 w-3 mr-1 text-emerald-500" /> +12%
+                                Total registered patients
                             </p>
                         </CardContent>
                     </Card>
@@ -220,7 +240,8 @@ export default function DashboardPage() {
                         <CardContent>
                             <div className="text-2xl font-bold text-slate-900 dark:text-white">${stats.totalRevenue.toFixed(0)}</div>
                             <p className="text-xs text-muted-foreground mt-1 flex items-center">
-                                <TrendingUp className="h-3 w-3 mr-1 text-emerald-500" /> +8%
+                                {/* <TrendingUp className="h-3 w-3 mr-1 text-emerald-500" /> +8% */}
+                                Lifetime Revenue
                             </p>
                         </CardContent>
                     </Card>

@@ -1,4 +1,4 @@
-import { supabase } from '@/lib/supabase'
+import { createClient } from '@/lib/supabase-server'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import {
@@ -17,10 +17,12 @@ import { Plus } from 'lucide-react'
 export const dynamic = 'force-dynamic'
 
 export default async function PatientsPage() {
+    const supabase = await createClient()
     const { data: patients, error } = await supabase
         .from('patients')
         .select('*')
         .order('created_at', { ascending: false })
+
 
     if (error) {
         return <div className="text-red-500">Error loading patients: {error.message}</div>

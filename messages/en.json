@@ -34,7 +34,7 @@
         "product": "Product",
         "company": "Company",
         "legal": "Legal",
-        "rights": "SehaTech Inc. All rights reserved.",
+        "rights": "ZahiFlow Inc. All rights reserved.",
         "about": "About",
         "blog": "Blog",
         "careers": "Careers",
@@ -50,7 +50,8 @@
         "invoices": "Invoices",
         "procedures": "Procedures",
         "settings": "Settings",
-        "logout": "Log out"
+        "logout": "Log out",
+        "billing": "Billing & Upgrade"
     },
     "Navbar": {
         "features": "Features",
@@ -183,29 +184,118 @@
                 "doctor": "Doctor",
                 "staff": "Staff"
             }
+        }
+    },
+    "InviteGuide": {
+        "title": "How to manage your team",
+        "inviteTitle": "How do I invite members?",
+        "inviteDesc": "Click the 'Invite Member' button, enter their email address and select their role. They will receive an email with a secure link to join your clinic.",
+        "rolesTitle": "What are the roles?",
+        "roles": {
+            "owner": "Admin/Owner: Full access to all settings and billing.",
+            "doctor": "Doctor: Can manage patients, appointments, and prescriptions.",
+            "nurse": "Nurse: Can manage visits and basic patient info.",
+            "receptionist": "Receptionist: Can manage appointments and schedule."
         },
-        "Dashboard": {
-            "greeting": "Good Morning",
-            "greetingSubtitle": "Here's what's happening in your clinic today.",
-            "recordVisit": "Record Visit",
-            "addPatient": "Add Patient",
-            "totalPatients": "Total Patients",
-            "appointmentsToday": "Appointments Today",
-            "pendingInvoices": "Pending Invoices",
-            "totalRevenue": "Total Revenue",
-            "scheduledToday": "Scheduled for today",
-            "unpaidBalance": "Unpaid balance",
-            "quickActions": "Quick Actions",
-            "quickActionsDesc": "Common tasks you perform daily.",
-            "recordNewVisit": "Record New Visit",
-            "registerPatient": "Register Patient",
-            "appointments": "Appointments",
-            "manageBilling": "Manage Billing",
-            "recentActivity": "Recent Activity",
-            "noActivity": "No recent activity."
+        "troubleTitle": "Trouble accepting invites?",
+        "troubleDesc": "If a user cannot accept an invite, ask them to check their spam folder. Using an Incognito window can also help ensure they are signing up or logging in with the correct account."
+    },
+    "InviteMember": {
+        "trigger": "Invite Member",
+        "title": "Invite Team Member",
+        "description": "Send an invitation email to add a new member to your clinic.",
+        "emailLabel": "Email Address",
+        "emailPlaceholder": "doctor@clinic.com",
+        "roleLabel": "Role",
+        "rolePlaceholder": "Select a role",
+        "roles": {
+            "doctor": "Doctor",
+            "nurse": "Nurse",
+            "receptionist": "Receptionist"
+        },
+        "cancel": "Cancel",
+        "send": "Send Invitation",
+        "sending": "Sending...",
+        "success": "Invitation sent successfully!",
+        "error": "Failed to send invitation"
+    },
+    "Dashboard": {
+        "greeting": "Good Morning",
+        "greetingSubtitle": "Here's what's happening in your clinic today.",
+        "recordVisit": "Record Visit",
+        "addPatient": "Add Patient",
+        "totalPatients": "Total Patients",
+        "appointmentsToday": "Appointments Today",
+        "pendingInvoices": "Pending Invoices",
+        "totalRevenue": "Total Revenue",
+        "scheduledToday": "Scheduled for today",
+        "unpaidBalance": "Unpaid balance",
+        "quickActions": "Quick Actions",
+        "quickActionsDesc": "Common tasks you perform daily.",
+        "recordNewVisit": "Record New Visit",
+        "registerPatient": "Register Patient",
+        "appointments": "Appointments",
+        "manageBilling": "Manage Billing",
+        "recentActivity": "Recent Activity",
+        "noActivity": "No recent activity.",
+        "onboarding": {
+            "title": "Getting Started 🚀",
+            "stepsCompleted": "steps completed",
+            "of": "of",
+            "completedTitle": "You're all set! 🎉",
+            "completedDesc": "You've completed the onboarding checklist.",
+            "steps": {
+                "account": "Create your account",
+                "patient": "Add your first patient",
+                "appointment": "Schedule an appointment",
+                "invoice": "Create an invoice"
+            },
+            "actions": {
+                "addPatient": "Add Patient",
+                "bookVisit": "Book Visit",
+                "createInvoice": "Go to Invoices"
+            }
         }
     },
     "Login": {
-        "forgotPassword": "Forgot password?"
+        "forgotPassword": "Forgot your password?"
+    },
+    "Common": {
+        "actions": "Actions",
+        "viewDetails": "View Details",
+        "printInvoice": "Print Invoice",
+        "edit": "Edit",
+        "delete": "Delete",
+        "cancel": "Cancel",
+        "reschedule": "Reschedule",
+        "markCompleted": "Mark as Completed",
+        "markAsPaid": "Mark as Paid",
+        "status": "Status"
+    },
+    "Toasts": {
+        "patients": {
+            "successAdd": "Patient registered successfully!",
+            "successAddDesc": "{name} has been added to the system.",
+            "errorAdd": "Failed to register patient"
+        },
+        "visits": {
+            "successRecord": "Visit recorded successfully!",
+            "successRecordDesc": "Patient visit has been saved to the system.",
+            "errorRecord": "Failed to record visit",
+            "selectPatient": "Please select a patient"
+        }
+    },
+    "Visits": {
+        "title": "Visits",
+        "subtitle": "Record and manage patient consultations",
+        "recordVisit": "Record Visit",
+        "noVisits": "No visits recorded",
+        "startRecording": "Start recording patient visits to track consultations.",
+        "unknownPatient": "Unknown Patient",
+        "appointmentBased": "Appointment-based",
+        "viewPrint": "View / Print",
+        "symptoms": "Symptoms",
+        "diagnosis": "Diagnosis",
+        "notes": "Doctor's Notes"
     }
 }

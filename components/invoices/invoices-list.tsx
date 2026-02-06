@@ -12,6 +12,7 @@ import {
     Filter
 } from 'lucide-react'
 import Link from 'next/link'
+import { useTranslations } from 'next-intl'
 import { formatCurrency } from '@/hooks/use-currency'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
@@ -22,6 +23,9 @@ import {
     DropdownMenuItem,
     DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
+import { markInvoiceAsPaid } from '@/app/actions/invoices'
+import { toast } from 'sonner'
+import { CheckCircle2 } from 'lucide-react'
 import {
     Table,
     TableBody,
@@ -49,7 +53,21 @@ interface InvoicesListProps {
 }
 
 export function InvoicesList({ invoices: initialInvoices, currency }: InvoicesListProps) {
+    const t = useTranslations('Common')
     const [searchTerm, setSearchTerm] = useState('')
+
+    const handleMarkAsPaid = async (id: string) => {
+        try {
+            const result = await markInvoiceAsPaid(id)
+            if (result.success) {
+                toast.success('Invoice marked as paid')
+            } else {
+                toast.error(result.error || 'Failed to update invoice')
+            }
+        } catch (e) {
+            toast.error('An error occurred')
+        }
+    }
 
     const filteredInvoices = initialInvoices.filter(inv =>
         inv.invoice_number.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -58,7 +76,7 @@ export function InvoicesList({ invoices: initialInvoices, currency }: InvoicesLi
 
     const getStatusVariant = (status: string) => {
         switch (status) {
-            case 'paid': return 'default' // Primary/Solid for success usually
+            case 'paid': return 'default'
             case 'unpaid': return 'destructive'
             case 'partial': return 'secondary'
             default: return 'outline'
@@ -109,7 +127,7 @@ export function InvoicesList({ invoices: initialInvoices, currency }: InvoicesLi
                             <TableHead className="text-right">Amount</TableHead>
                             <TableHead className="text-right">Paid</TableHead>
                             <TableHead className="text-center">Status</TableHead>
-                            <TableHead className="text-right">Actions</TableHead>
+                            <TableHead className="text-right">{t('actions')}</TableHead>
                         </TableRow>
                     </TableHeader>
                     <motion.tbody
@@ -166,15 +184,24 @@ export function InvoicesList({ invoices: initialInvoices, currency }: InvoicesLi
                                                 <Link href={`/invoices/${invoice.id}`}>
                                                     <DropdownMenuItem>
                                                         <FileText className="mr-2 h-4 w-4" />
-                                                        View Details
+                                                        {t('viewDetails')}
                                                     </DropdownMenuItem>
                                                 </Link>
                                                 <Link href={`/invoices/${invoice.id}?action=print`}>
                                                     <DropdownMenuItem>
                                                         <ArrowUpRight className="mr-2 h-4 w-4" />
-                                                        Print Invoice
+                                                        {t('printInvoice')}
                                                     </DropdownMenuItem>
                                                 </Link>
+                                                {invoice.status !== 'paid' && (
+                                                    <DropdownMenuItem
+                                                        className="text-emerald-600 focus:text-emerald-700"
+                                                        onClick={() => handleMarkAsPaid(invoice.id)}
+                                                    >
+                                                        <CheckCircle2 className="mr-2 h-4 w-4" />
+                                                        {t('markAsPaid')}
+                                                    </DropdownMenuItem>
+                                                )}
                                             </DropdownMenuContent>
                                         </DropdownMenu>
                                     </TableCell>

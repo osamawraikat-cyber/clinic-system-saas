@@ -168,3 +168,60 @@
     }
   }
 }
+
+@media print {
+
+  /* Hide UI elements */
+  nav,
+  aside,
+  header,
+  button,
+  [role="button"],
+  a[href^="/"],
+  .no-print,
+  [data-sonner-toaster] {
+    display: none !important;
+  }
+
+  /* Reset layout constraints */
+  body,
+  main,
+  .p-4,
+  .container,
+  .max-w-6xl {
+    padding: 0 !important;
+    margin: 0 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    background: white !important;
+    color: black !important;
+    box-shadow: none !important;
+    border: none !important;
+  }
+
+  /* Force background colors for specific print-critical elements if needed */
+  * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  /* Adjust Grid layouts to be linear or optimized */
+  .grid {
+    display: block !important;
+  }
+
+  .md\:col-span-2,
+  .lg\:col-span-8 {
+    width: 100% !important;
+  }
+
+  /* Hide scrollbars */
+  ::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Page break handling */
+  .page-break {
+    page-break-before: always;
+  }
+}

@@ -34,7 +34,7 @@
         "product": "Ürün",
         "company": "Şirket",
         "legal": "Yasal",
-        "rights": "SehaTech. Tüm hakları saklıdır.",
+        "rights": "ZahiFlow. Tüm hakları saklıdır.",
         "about": "Hakkında",
         "blog": "Blog",
         "careers": "Kariyer",
@@ -50,7 +50,8 @@
         "invoices": "Faturalar",
         "procedures": "Prosedürler",
         "settings": "Ayarlar",
-        "logout": "Çıkış Yap"
+        "logout": "Çıkış Yap",
+        "billing": "Faturalandırma & Yükseltme"
     },
     "Navbar": {
         "features": "Özellikler",
@@ -146,7 +147,102 @@
         "errorTitle": "Hata",
         "errorDesc": "Bir şeyler ters gitti. Lütfen tekrar deneyin."
     },
+    "InviteGuide": {
+        "title": "Ekibinizi nasıl yönetirsiniz",
+        "inviteTitle": "Üyeleri nasıl davet ederim?",
+        "inviteDesc": "'Üye Davet Et' düğmesine tıklayın, e-posta adreslerini girin ve rollerini seçin. Kliniğinize katılmaları için güvenli bir bağlantı içeren bir e-posta alacaklar.",
+        "rolesTitle": "Roller nelerdir?",
+        "roles": {
+            "owner": "Yönetici/Sahip: Tüm ayarlara ve faturalandırmaya tam erişim.",
+            "doctor": "Doktor: Hastaları, randevuları ve reçeteleri yönetebilir.",
+            "nurse": "Hemşire: Ziyaretleri ve temel hasta bilgilerini yönetebilir.",
+            "receptionist": "Resepsiyonist: Randevuları ve takvimi yönetebilir."
+        },
+        "troubleTitle": "Davetiyeleri kabul etmekte sorun mu yaşıyorsunuz?",
+        "troubleDesc": "Bir kullanıcı davetiyeyi kabul edemezse, istenmeyen posta (spam) klasörünü kontrol etmelerini isteyin. Gizli (Incognito) pencere kullanmak da doğru hesapla oturum açtıklarından emin olmalarına yardımcı olabilir."
+    },
+    "InviteMember": {
+        "trigger": "Üye Davet Et",
+        "title": "Ekip Üyesi Davet Et",
+        "description": "Kliniğinize yeni bir üye eklemek için bir davetiye e-postası gönderin.",
+        "emailLabel": "E-posta Adresi",
+        "emailPlaceholder": "doktor@klinik.com",
+        "roleLabel": "Rol",
+        "rolePlaceholder": "Bir rol seçin",
+        "roles": {
+            "doctor": "Doktor",
+            "nurse": "Hemşire",
+            "receptionist": "Resepsiyonist"
+        },
+        "cancel": "İptal",
+        "send": "Davetiye Gönder",
+        "sending": "Gönderiliyor...",
+        "success": "Davetiye başarıyla gönderildi!",
+        "error": "Davetiye gönderilemedi"
+    },
+    "Dashboard": {
+        "greeting": "Günaydın",
+        "greetingSubtitle": "Bugün kliniğinizde olanlar.",
+        "recordVisit": "Ziyaret Kaydet",
+        "addPatient": "Hasta Ekle",
+        "totalPatients": "Toplam Hasta",
+        "appointmentsToday": "Bugünkü Randevular",
+        "pendingInvoices": "Bekleyen Faturalar",
+        "totalRevenue": "Toplam Gelir",
+        "scheduledToday": "Bugün için planlanan",
+        "unpaidBalance": "Ödenmemiş bakiye",
+        "quickActions": "Hızlı İşlemler",
+        "quickActionsDesc": "Günlük genel görevler.",
+        "recordNewVisit": "Yeni Ziyaret Kaydet",
+        "registerPatient": "Hasta Kaydet",
+        "appointments": "Randevular",
+        "manageBilling": "Faturalandırmayı Yönet",
+        "recentActivity": "Son Hareketler",
+        "noActivity": "Son zamanlarda aktivite yok.",
+        "onboarding": {
+            "title": "Başlarken 🚀",
+            "stepsCompleted": "adım tamamlandı",
+            "of": "/",
+            "completedTitle": "Hazırsınız! 🎉",
+            "completedDesc": "Başlangıç listesini tamamladınız.",
+            "steps": {
+                "account": "Hesabınızı oluşturun",
+                "patient": "İlk hastanızı ekleyin",
+                "appointment": "Randevu planlayın",
+                "invoice": "Fatura oluşturun"
+            },
+            "actions": {
+                "addPatient": "Hasta Ekle",
+                "bookVisit": "Randevu Al",
+                "createInvoice": "Faturalara Git"
+            }
+        }
+    },
     "Login": {
         "forgotPassword": "Şifrenizi mi unuttunuz?"
+    },
+    "Common": {
+        "actions": "İşlemler",
+        "viewDetails": "Detayları Gör",
+        "printInvoice": "Faturayı Yazdır",
+        "edit": "Düzenle",
+        "delete": "Sil",
+        "cancel": "İptal Et",
+        "reschedule": "Yeniden Planla",
+        "markCompleted": "Tamamlandı Olarak İşaretle",
+        "status": "Durum"
+    },
+    "Visits": {
+        "title": "Ziyaretler",
+        "subtitle": "Hasta konsültasyonlarını kaydedin ve yönetin",
+        "recordVisit": "Ziyaret Kaydet",
+        "noVisits": "Kayıtlı ziyaret yok",
+        "startRecording": "Konsültasyonları takip etmek için hasta ziyaretlerini kaydetmeye başlayın.",
+        "unknownPatient": "Bilinmeyen Hasta",
+        "appointmentBased": "Randevu tabanlı",
+        "viewPrint": "Görüntüle / Yazdır",
+        "symptoms": "Semptomlar",
+        "diagnosis": "Teşhis",
+        "notes": "Doktor Notları"
     }
 }

@@ -49,7 +49,7 @@ export async function inviteMember(email: string, role: string, clinicId: string
         .eq('id', clinicId)
         .single()
 
-    const clinicName = clinic?.name || 'SehaTech'
+    const clinicName = clinic?.name || 'ZahiFlow'
 
     // Send email
     // Construct invite link

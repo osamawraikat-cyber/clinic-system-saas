@@ -9,7 +9,7 @@ export default async function TermsPage() {
             <div className="prose dark:prose-invert">
                 <p className="text-muted-foreground">
                     This is a placeholder for the Terms of Service. In a production environment,
-                    this page would outline the rules and regulations for using the SehaTech platform.
+                    this page would outline the rules and regulations for using the ZahiFlow platform.
                 </p>
                 <h3 className="text-xl font-semibold mt-8 mb-4">1. Acceptance of Terms</h3>
                 <p className="text-muted-foreground">

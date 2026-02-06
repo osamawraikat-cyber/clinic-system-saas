@@ -25,7 +25,7 @@ const PLANS = {
     starter: {
         name: 'Starter',
         price: 0,
-        patientLimit: 50,
+        patientLimit: 20,
         teamLimit: 1,
         features: ['Basic patient management', 'Appointment scheduling', 'Invoice generation'],
         icon: Zap,
@@ -358,61 +358,77 @@ export default function BillingPage() {
                         return (
                             <Card
                                 key={planId}
-                                className={`relative ${plan.popular ? 'border-blue-500 border-2' : ''} ${isCurrentPlan ? 'ring-2 ring-emerald-500' : ''}`}
+                                className={`relative transition-all duration-300 ${plan.popular
+                                    ? 'border-emerald-500 border-2 shadow-xl scale-105 z-10 bg-gradient-to-b from-white to-emerald-50/50 dark:from-slate-950 dark:to-emerald-950/10'
+                                    : 'hover:border-slate-300 dark:hover:border-slate-700 hover:shadow-md'
+                                    } ${isCurrentPlan ? 'ring-2 ring-emerald-500 ring-offset-2' : ''}`}
                             >
                                 {plan.popular && (
-                                    <div className="absolute -top-3 left-1/2 -translate-x-1/2">
-                                        <Badge className="bg-blue-500 text-white">Most Popular</Badge>
+                                    <div className="absolute -top-4 left-1/2 -translate-x-1/2">
+                                        <Badge className="bg-gradient-to-r from-emerald-500 to-teal-600 text-white border-0 px-4 py-1 text-sm shadow-lg">
+                                            Most Popular
+                                        </Badge>
                                     </div>
                                 )}
 
                                 <CardHeader>
-                                    <CardTitle className="flex items-center gap-2">
-                                        <Icon className="h-5 w-5" />
+                                    <div className={`w-12 h-12 rounded-lg flex items-center justify-center mb-2 ${plan.color}`}>
+                                        <Icon className="h-6 w-6" />
+                                    </div>
+                                    <CardTitle className="text-xl">
                                         {plan.name}
                                     </CardTitle>
                                     <CardDescription>
-                                        <span className="text-3xl font-bold text-foreground">
-                                            ${plan.price}
-                                        </span>
-                                        {plan.price > 0 && <span className="text-muted-foreground">/month</span>}
+                                        <div className="flex items-baseline gap-1 mt-1">
+                                            <span className="text-3xl font-bold text-foreground">
+                                                ${plan.price}
+                                            </span>
+                                            {plan.price > 0 && <span className="text-muted-foreground">/month</span>}
+                                        </div>
                                     </CardDescription>
                                 </CardHeader>
 
                                 <CardContent>
-                                    <ul className="space-y-2">
-                                        {plan.features.map((feature, i) => (
-                                            <li key={i} className="flex items-center gap-2 text-sm">
-                                                <Check className="h-4 w-4 text-emerald-500 flex-shrink-0" />
-                                                {feature}
-                                            </li>
-                                        ))}
-                                    </ul>
+                                    <div className="space-y-4">
+                                        <div className="text-sm font-medium text-muted-foreground">Includes:</div>
+                                        <ul className="space-y-3">
+                                            {plan.features.map((feature, i) => (
+                                                <li key={i} className="flex items-start gap-3 text-sm">
+                                                    <div className="mt-1 rounded-full p-0.5 bg-emerald-100 dark:bg-emerald-900/30">
+                                                        <Check className="h-3 w-3 text-emerald-600 dark:text-emerald-400 flex-shrink-0" />
+                                                    </div>
+                                                    <span className="text-slate-700 dark:text-slate-300">{feature}</span>
+                                                </li>
+                                            ))}
+                                        </ul>
+                                    </div>
                                 </CardContent>
 
-                                <CardFooter>
+                                <CardFooter className="pt-2">
                                     {isCurrentPlan ? (
-                                        <Button className="w-full" variant="outline" disabled>
+                                        <Button className="w-full bg-emerald-100 text-emerald-800 hover:bg-emerald-200 border-0" variant="outline" disabled>
                                             <CheckCircle className="h-4 w-4 mr-2" />
                                             Current Plan
                                         </Button>
                                     ) : planId === 'starter' ? (
-                                        <Button className="w-full" variant="outline" disabled>
+                                        <Button className="w-full" variant="ghost" disabled>
                                             Free Tier
                                         </Button>
                                     ) : (
                                         <Button
-                                            className="w-full"
+                                            className={`w-full ${plan.popular ? 'bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 shadow-lg' : ''}`}
                                             variant={isUpgrade ? 'default' : 'outline'}
                                             onClick={() => handleUpgrade(planId)}
                                             disabled={upgrading !== null}
                                         >
                                             {upgrading === planId ? (
                                                 <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                                            ) : isUpgrade && plan.popular ? (
+                                                <Star className="h-4 w-4 mr-2 fill-current" />
                                             ) : isUpgrade ? (
                                                 <Zap className="h-4 w-4 mr-2" />
                                             ) : null}
-                                            {isUpgrade ? 'Upgrade' : isDowngrade ? 'Downgrade' : 'Select'}
+                                            {isUpgrade ? 'Upgrade Now' : isDowngrade ? 'Downgrade' : 'Select Plan'}
                                         </Button>
                                     )}
                                 </CardFooter>
@@ -440,12 +456,7 @@ export default function BillingPage() {
                             You won&apos;t be able to add new patients until you upgrade or remove existing ones. Your existing data remains safe.
                         </p>
                     </div>
-                    <div>
-                        <h4 className="font-medium">Do you offer refunds?</h4>
-                        <p className="text-sm text-muted-foreground">
-                            We offer a 14-day money-back guarantee for new subscriptions. Contact support for assistance.
-                        </p>
-                    </div>
+
                 </CardContent>
             </Card>
         </div>

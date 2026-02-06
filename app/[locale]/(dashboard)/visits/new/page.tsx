@@ -2,7 +2,11 @@
 
 import { useState, useEffect } from 'react'
 import { useRouter } from '@/i18n/navigation'
-import { supabase } from '@/lib/supabase'
+import { createBrowserClient } from '@supabase/ssr'
+import { useForm } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
+import * as z from 'zod'
+
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -17,31 +21,54 @@ import {
 } from '@/components/ui/select'
 import { toast } from 'sonner'
 import {
-    Activity,
     User,
     Calendar,
     Stethoscope,
     ClipboardList,
     Save,
-    X,
     Clock
 } from 'lucide-react'
 import { motion } from 'framer-motion'
 
+import { useTranslations } from 'next-intl'
+
+// Zod Schema
+const visitSchema = z.object({
+    patient_id: z.string().min(1, 'Please select a patient'),
+    appointment_id: z.string().optional(),
+    visit_date: z.string().min(1, 'Visit date is required'),
+    symptoms: z.string().optional(),
+    diagnosis: z.string().optional(),
+    doctor_notes: z.string().optional()
+})
+
+type VisitFormValues = z.infer<typeof visitSchema>
+
 export default function RecordVisitPage() {
+    const supabase = createBrowserClient(
+        process.env.NEXT_PUBLIC_SUPABASE_URL!,
+        process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+    )
+    const t = useTranslations('Toasts')
     const router = useRouter()
     const [loading, setLoading] = useState(false)
     const [patients, setPatients] = useState<any[]>([])
     const [appointments, setAppointments] = useState<any[]>([])
     const [loadingData, setLoadingData] = useState(true)
-    const [formData, setFormData] = useState({
-        patient_id: '',
-        appointment_id: '',
-        visit_date: new Date().toISOString().slice(0, 16), // datetime-local format
-        symptoms: '',
-        diagnosis: '',
-        doctor_notes: ''
+
+    const { register, handleSubmit, setValue, watch, formState: { errors } } = useForm<VisitFormValues>({
+        resolver: zodResolver(visitSchema),
+        defaultValues: {
+            patient_id: '',
+            appointment_id: '_none',
+            visit_date: new Date().toISOString().slice(0, 16),
+            symptoms: '',
+            diagnosis: '',
+            doctor_notes: ''
+        }
     })
+
+    const selectedAppointmentId = watch('appointment_id')
 
     useEffect(() => {
         const loadData = async () => {
@@ -71,43 +98,30 @@ export default function RecordVisitPage() {
         loadData()
     }, [])
 
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-        const { name, value } = e.target
-        setFormData(prev => ({ ...prev, [name]: value }))
-    }
-
-    const handleSelectChange = (name: string, value: string) => {
-        setFormData(prev => ({ ...prev, [name]: value }))
-
-        // If appointment is selected, auto-fill patient
-        if (name === 'appointment_id' && value && value !== '_none') {
-            const appointment = appointments.find(a => a.id === value)
+    // Side effect: Auto-select patient when appointment changes
+    useEffect(() => {
+        if (selectedAppointmentId && selectedAppointmentId !== '_none') {
+            const appointment = appointments.find(a => a.id === selectedAppointmentId)
             if (appointment) {
                 const patient = patients.find(p => p.full_name === appointment.patients?.full_name)
                 if (patient) {
-                    setFormData(prev => ({ ...prev, patient_id: patient.id }))
+                    setValue('patient_id', patient.id)
                 }
             }
         }
-    }
+    }, [selectedAppointmentId, appointments, patients, setValue])
 
-    const handleSubmit = async (e: React.FormEvent) => {
-        e.preventDefault()
+    const onSubmit = async (data: VisitFormValues) => {
         setLoading(true)
 
         try {
-            if (!formData.patient_id) {
-                toast.error('Please select a patient')
-                return
-            }
-
             const visitData = {
-                patient_id: formData.patient_id,
-                appointment_id: (formData.appointment_id && formData.appointment_id !== '_none') ? formData.appointment_id : null,
-                visit_date: new Date(formData.visit_date).toISOString(),
-                symptoms: formData.symptoms || null,
-                diagnosis: formData.diagnosis || null,
-                doctor_notes: formData.doctor_notes || null
+                patient_id: data.patient_id,
+                appointment_id: (data.appointment_id && data.appointment_id !== '_none') ? data.appointment_id : null,
+                visit_date: new Date(data.visit_date).toISOString(),
+                symptoms: data.symptoms || null,
+                diagnosis: data.diagnosis || null,
+                doctor_notes: data.doctor_notes || null
             }
 
             const { error } = await supabase
@@ -117,20 +131,18 @@ export default function RecordVisitPage() {
 
             if (error) {
                 console.error('Supabase error:', error)
-                throw new Error(error.message || 'Failed to record visit')
+                throw new Error(error.message || t('visits.errorRecord'))
             }
 
-            toast.success('Visit recorded successfully!', {
-                description: 'Patient visit has been saved to the system.'
+            toast.success(t('visits.successRecord'), {
+                description: t('visits.successRecordDesc')
             })
 
             router.push('/visits')
             router.refresh()
         } catch (error: any) {
             console.error('Visit error:', error)
-            toast.error('Failed to record visit', {
-                description: error.message || 'An unexpected error occurred.'
-            })
+            toast.error(error.message || t('visits.errorRecord'))
         } finally {
             setLoading(false)
         }
@@ -141,7 +153,7 @@ export default function RecordVisitPage() {
         visible: {
             opacity: 1,
             y: 0,
-            transition: { duration: 0.5, ease: "easeOut" }
+            transition: { duration: 0.5, ease: "easeOut" as const }
         }
     }
 
@@ -159,7 +171,7 @@ export default function RecordVisitPage() {
                 </div>
             </div>
 
-            <form onSubmit={handleSubmit}>
+            <form onSubmit={handleSubmit(onSubmit)}>
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
                     {/* Left Column: Context (Patient & Time) */}
                     <div className="lg:col-span-4 space-y-6">
@@ -175,8 +187,7 @@ export default function RecordVisitPage() {
                                 <div className="space-y-2">
                                     <Label className="text-slate-600 dark:text-slate-400">Link to Appointment</Label>
                                     <Select
-                                        value={formData.appointment_id}
-                                        onValueChange={(val) => handleSelectChange('appointment_id', val)}
+                                        onValueChange={(val) => setValue('appointment_id', val)}
                                         disabled={loadingData}
                                     >
                                         <SelectTrigger className="bg-white dark:bg-slate-950 border-slate-200 focus:ring-emerald-500/20">
@@ -200,11 +211,11 @@ export default function RecordVisitPage() {
                                 <div className="space-y-2">
                                     <Label className="text-slate-600 dark:text-slate-400">Patient *</Label>
                                     <Select
-                                        value={formData.patient_id}
-                                        onValueChange={(val) => handleSelectChange('patient_id', val)}
+                                        onValueChange={(val) => setValue('patient_id', val)}
                                         disabled={loadingData}
+                                        value={watch('patient_id')}
                                     >
-                                        <SelectTrigger className="bg-white dark:bg-slate-950 border-slate-200 focus:ring-emerald-500/20">
+                                        <SelectTrigger className={`bg-white dark:bg-slate-950 border-slate-200 focus:ring-emerald-500/20 ${errors.patient_id ? 'border-red-500' : ''}`}>
                                             <SelectValue placeholder={loadingData ? "Loading..." : "Select patient"} />
                                         </SelectTrigger>
                                         <SelectContent>
@@ -215,6 +226,7 @@ export default function RecordVisitPage() {
                                             ))}
                                         </SelectContent>
                                     </Select>
+                                    {errors.patient_id && <p className="text-xs text-red-500">{errors.patient_id.message}</p>}
                                 </div>
 
                                 {/* Visit Date/Time */}
@@ -224,14 +236,12 @@ export default function RecordVisitPage() {
                                         <Clock className="absolute left-3 top-2.5 h-4 w-4 text-slate-400" />
                                         <Input
                                             id="visit_date"
-                                            name="visit_date"
                                             type="datetime-local"
-                                            required
-                                            value={formData.visit_date}
-                                            onChange={handleChange}
+                                            {...register('visit_date')}
                                             className="pl-9 bg-white dark:bg-slate-950 border-slate-200 focus:border-emerald-500 focus:ring-emerald-500/20"
                                         />
                                     </div>
+                                    {errors.visit_date && <p className="text-xs text-red-500">{errors.visit_date.message}</p>}
                                 </div>
                             </CardContent>
                         </Card>
@@ -285,10 +295,8 @@ export default function RecordVisitPage() {
                                     </Label>
                                     <Textarea
                                         id="symptoms"
-                                        name="symptoms"
-                                        value={formData.symptoms}
-                                        onChange={handleChange}
                                         placeholder="Patient reports headache, fever..."
+                                        {...register('symptoms')}
                                         className="min-h-[120px] bg-slate-50 dark:bg-slate-900 border-slate-200 focus:border-emerald-500 focus:ring-emerald-500/20 resize-y"
                                     />
                                 </div>
@@ -300,10 +308,8 @@ export default function RecordVisitPage() {
                                     </Label>
                                     <Textarea
                                         id="diagnosis"
-                                        name="diagnosis"
-                                        value={formData.diagnosis}
-                                        onChange={handleChange}
                                         placeholder="Acute Viral Infection..."
+                                        {...register('diagnosis')}
                                         className="min-h-[100px] bg-slate-50 dark:bg-slate-900 border-slate-200 focus:border-emerald-500 focus:ring-emerald-500/20 resize-y"
                                     />
                                 </div>
@@ -321,10 +327,8 @@ export default function RecordVisitPage() {
                             <CardContent className="space-y-4 pt-6">
                                 <Textarea
                                     id="doctor_notes"
-                                    name="doctor_notes"
-                                    value={formData.doctor_notes}
-                                    onChange={handleChange}
                                     placeholder="Rx: Paracetamol 500mg..."
+                                    {...register('doctor_notes')}
                                     className="min-h-[200px] font-mono text-sm bg-slate-50 dark:bg-slate-900 border-slate-200 focus:border-blue-500 focus:ring-blue-500/20"
                                 />
                                 <div className="text-xs text-muted-foreground bg-blue-50 dark:bg-blue-900/10 p-3 rounded-md border border-blue-100 dark:border-blue-900/20">

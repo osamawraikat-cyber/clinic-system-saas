@@ -1,6 +1,6 @@
-import { supabase } from '@/lib/supabase'
+import { createClient } from '@/lib/supabase-server'
 import { Button } from '@/components/ui/button'
-import Link from 'next/link'
+import { Link } from '@/i18n/navigation'
 import { Plus } from 'lucide-react'
 import { AppointmentsList } from '@/components/appointments/appointments-list'
 
@@ -10,6 +10,7 @@ export const revalidate = 0
 export const dynamic = 'force-dynamic'
 
 export default async function AppointmentsPage() {
+    const supabase = await createClient()
     const { data: appointments, error } = await supabase
         .from('appointments')
         .select(`
