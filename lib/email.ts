@@ -10,7 +10,7 @@ export async function sendInvitationEmail(email: string, inviteLink: string, cli
 
     try {
         await resend.emails.send({
-            from: 'ZahiFlow <onboarding@resend.dev>', // Use resend.dev for testing if no domain
+            from: 'ZahiFlow <noreply@zahiflow.com>', // Use resend.dev for testing if no domain
             to: email,
             subject: `Join ${clinicName} on ZahiFlow`,
             html: `
