@@ -64,7 +64,7 @@ export function Hero() {
                                     {t('ctaStart')} <ArrowRight className="ms-2 h-4 w-4 rtl:rotate-180" />
                                 </Button>
                             </Link>
-                            <Link href="#demo">
+                            <Link href="/demo">
                                 <Button variant="outline" size="lg" className="h-12 px-8 text-base border-slate-300 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800">
                                     {t('ctaDemo')}
                                 </Button>

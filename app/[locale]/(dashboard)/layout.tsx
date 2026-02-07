@@ -1,6 +1,7 @@
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar"
 import { AppSidebar } from "@/components/app-sidebar"
 import { LanguageSwitcher } from "@/components/language-switcher"
+import DemoBanner from "@/components/demo-banner"
 
 export default function DashboardLayout({
     children,
@@ -19,6 +20,7 @@ export default function DashboardLayout({
                     <LanguageSwitcher />
                 </div>
                 <div className="p-4">
+                    <DemoBanner />
                     {children}
                 </div>
             </main>
