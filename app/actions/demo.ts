@@ -31,10 +31,20 @@ export async function seedDemoData() {
     )
 
     // 1. Get current clinic (should be the demo clinic)
-    const { data: clinicIds } = await supabase.rpc('get_my_clinic_ids')
-    const clinicId = clinicIds?.[0]
+    const { data: clinicIds, error: rpcError } = await supabase.rpc('get_my_clinic_ids')
 
-    if (!clinicId) return { error: 'No clinic found' }
+    if (rpcError) {
+        console.error('RPC Error (get_my_clinic_ids):', rpcError)
+        return { error: rpcError.message }
+    }
+
+    const clinicId = clinicIds?.[0]
+    console.log('Seeding demo data for clinic:', clinicId)
+
+    if (!clinicId) {
+        console.error('No clinic ID found for seeding')
+        return { error: 'No clinic found' }
+    }
 
     // 2. Check if we already have visits/invoices
     const { count: visitCount } = await supabase
@@ -46,14 +56,35 @@ export async function seedDemoData() {
         return { success: true, message: 'Data already exists' }
     }
 
-    // 3. Get some patient IDs
-    const { data: patients } = await supabase
+    // 3. Get some patient IDs. If no patients, seed them first!
+    let { data: patients, error: patientError } = await supabase
         .from('patients')
-        .select('id')
+        .select('id, full_name')
         .eq('clinic_id', clinicId)
         .limit(5)
 
-    if (!patients || patients.length === 0) return { error: 'No patients found to seed' }
+    if (!patients || patients.length === 0) {
+        console.log('No patients found, seeding initial patients...')
+        const samplePatients = [
+            { clinic_id: clinicId, full_name: 'Sarah Ahmed', phone: '0791234567', national_id: '9901012345' },
+            { clinic_id: clinicId, full_name: 'Omar Khalil', phone: '0781234567', national_id: '9801012345' },
+            { clinic_id: clinicId, full_name: 'Laila Hassan', phone: '0771234567', national_id: '9701012345' }
+        ]
+        const { data: newPatients, error: seedPatientError } = await supabase
+            .from('patients')
+            .insert(samplePatients)
+            .select('id, full_name')
+
+        if (seedPatientError) {
+            console.error('Failed to seed patients:', seedPatientError)
+            return { error: 'Failed to seed patients: ' + seedPatientError.message }
+        }
+        patients = newPatients
+    }
+
+    if (!patients || patients.length === 0) {
+        return { error: 'No patients available for seeding visits/invoices' }
+    }
 
     // 4. Seed visits
     const sampleVisits = patients.map((p, i) => ({

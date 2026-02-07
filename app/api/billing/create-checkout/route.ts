@@ -17,6 +17,8 @@ export async function POST(request: NextRequest) {
         }
 
         const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
+        console.log('Using appUrl for redirects:', appUrl);
+        console.log('Variant ID:', plan.variantId);
 
         const checkoutUrl = await createSubscriptionCheckout({
             variantId: plan.variantId,
@@ -27,15 +29,17 @@ export async function POST(request: NextRequest) {
             cancelUrl: `${appUrl}/${locale}/billing?canceled=true`,
         });
 
+        console.log('LemonSqueezy response URL:', checkoutUrl);
+
         if (!checkoutUrl) {
             return NextResponse.json({ error: 'Failed to create checkout' }, { status: 500 });
         }
 
         return NextResponse.json({ url: checkoutUrl });
-    } catch (error) {
+    } catch (error: any) {
         console.error('Checkout error:', error);
         return NextResponse.json(
-            { error: 'Failed to create checkout session' },
+            { error: error.message || 'Failed to create checkout session' },
             { status: 500 }
         );
     }

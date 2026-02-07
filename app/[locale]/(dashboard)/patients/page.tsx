@@ -11,6 +11,7 @@ import {
 } from '@/components/ui/table'
 import Link from 'next/link'
 import { Plus } from 'lucide-react'
+import { DeletePatientButton } from '@/components/delete-patient-button'
 
 // This is a server component so we can fetch data directly
 // Use force-dynamic to ensure we alway get the latest list
@@ -23,6 +24,9 @@ export default async function PatientsPage() {
         .select('*')
         .order('created_at', { ascending: false })
 
+
+    const { data: { user } } = await supabase.auth.getUser()
+    const isAdmin = user?.user_metadata?.role === 'admin' || user?.email === process.env.NEXT_PUBLIC_DEMO_EMAIL
 
     if (error) {
         return <div className="text-red-500">Error loading patients: {error.message}</div>
@@ -50,7 +54,7 @@ export default async function PatientsPage() {
                                 <TableHead>Name</TableHead>
                                 <TableHead>Phone</TableHead>
                                 <TableHead>National ID</TableHead>
-                                <TableHead>Actions</TableHead>
+                                <TableHead className="text-right">Actions</TableHead>
                             </TableRow>
                         </TableHeader>
                         <TableBody>
@@ -66,10 +70,16 @@ export default async function PatientsPage() {
                                         <TableCell className="font-medium">{patient.full_name}</TableCell>
                                         <TableCell>{patient.phone}</TableCell>
                                         <TableCell>{patient.national_id || '-'}</TableCell>
-                                        <TableCell>
+                                        <TableCell className="text-right space-x-2">
                                             <Link href={`/patients/${patient.id}`}>
                                                 <Button variant="outline" size="sm">View</Button>
                                             </Link>
+                                            {isAdmin && (
+                                                <DeletePatientButton
+                                                    patientId={patient.id}
+                                                    patientName={patient.full_name}
+                                                />
+                                            )}
                                         </TableCell>
                                     </TableRow>
                                 ))
