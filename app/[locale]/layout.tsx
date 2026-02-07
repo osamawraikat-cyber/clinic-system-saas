@@ -20,10 +20,18 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "ZahiFlow - Management System",
   description: "Professional clinic management system for patient care and administration",
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "default",
+    title: "ZahiFlow",
+  },
+  icons: {
+    apple: "/icon-512.png",
+  },
 };
 
 export const viewport = {
-  themeColor: "#10b981",
+  themeColor: "#059669",
   width: "device-width",
   initialScale: 1,
   maximumScale: 1,
@@ -60,12 +68,6 @@ export default async function RootLayout({
 
   return (
     <html lang={locale} dir={locale === 'ar' ? 'rtl' : 'ltr'}>
-      <head>
-        <link rel="apple-touch-icon" href="/icon-512.png" />
-        <meta name="apple-mobile-web-app-capable" content="yes" />
-        <meta name="apple-mobile-web-app-status-bar-style" content="default" />
-        <meta name="apple-mobile-web-app-title" content="ZahiFlow" />
-      </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
