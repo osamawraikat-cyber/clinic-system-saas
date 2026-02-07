@@ -8,24 +8,39 @@ export async function sendInvitationEmail(email: string, inviteLink: string, cli
         return;
     }
 
+    // If domain is not verified, Resend only allows sending from onboarding@resend.dev
+    // to the email address associated with the account.
+    const fromEmail = process.env.RESEND_FROM_EMAIL || 'onboarding@resend.dev';
+
     try {
-        await resend.emails.send({
-            from: 'ZahiFlow <noreply@zahiflow.com>', // Use resend.dev for testing if no domain
+        const { data, error } = await resend.emails.send({
+            from: fromEmail,
             to: email,
             subject: `Join ${clinicName} on ZahiFlow`,
             html: `
-                <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto;">
-                    <h2>You've been invited!</h2>
-                    <p>You have been invited to join <strong>${clinicName}</strong> on ZahiFlow.</p>
-                    <p>Click the button below to accept the invitation:</p>
-                    <a href="${inviteLink}" style="display: inline-block; background-color: #000; color: #fff; padding: 10px 20px; text-decoration: none; border-radius: 5px; margin: 20px 0;">Accept Invitation</a>
-                    <p>Or copy this link: <br>${inviteLink}</p>
-                    <p>This link expires in 7 days.</p>
+                <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; color: #333;">
+                    <h2 style="color: #10b981;">You've been invited!</h2>
+                    <p>Hello,</p>
+                    <p>You have been invited to join <strong>${clinicName}</strong> on ZahiFlow (Clinic Management System).</p>
+                    <p>Click the button below to accept the invitation and set up your account:</p>
+                    <div style="margin: 30px 0;">
+                        <a href="${inviteLink}" style="background-color: #10b981; color: #fff; padding: 12px 24px; text-decoration: none; border-radius: 6px; font-weight: bold;">Accept Invitation</a>
+                    </div>
+                    <p>Or copy this link into your browser:</p>
+                    <p style="background: #f4f4f5; padding: 10px; border-radius: 4px; font-size: 14px; word-break: break-all;">${inviteLink}</p>
+                    <p style="font-size: 13px; color: #666; margin-top: 30px;">This link expires in 7 days.</p>
                 </div>
             `
         });
-    } catch (error) {
-        console.error('Failed to send email:', error);
-        throw new Error('Failed to send invitation email');
+
+        if (error) {
+            console.error('Resend API Error:', error);
+            throw new Error(`Resend Error: ${error.message}`);
+        }
+
+        console.log('Email sent successfully:', data?.id);
+    } catch (error: any) {
+        console.error('Failed to send email via Resend:', error);
+        throw new Error(error.message || 'Failed to send invitation email');
     }
 }

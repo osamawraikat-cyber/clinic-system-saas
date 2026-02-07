@@ -21,7 +21,11 @@ export async function inviteMember(email: string, role: string, clinicId: string
     }
 
     if (!canAdd) {
-        return { error: 'Member limit reached for your plan. Upgrade to invite more members.' }
+        return {
+            error: 'Member limit reached for your plan.',
+            code: 'LIMIT_REACHED',
+            message: 'Upgrade to a higher plan to invite more team members.'
+        }
     }
 
     // Insert invitation
@@ -60,9 +64,13 @@ export async function inviteMember(email: string, role: string, clinicId: string
         await sendInvitationEmail(email, inviteLink, clinicName)
         revalidatePath('/team') // Revalidate team page to show pending invite
         return { success: true }
-    } catch (emailError) {
+    } catch (emailError: any) {
         console.error('Error sending email:', emailError)
-        return { error: 'Invitation created but failed to send email. Please try resending.' }
+        // If it's a specific Resend error or just a failure
+        return {
+            error: emailError.message || 'Invitation created in database, but failed to send the email notification.',
+            details: 'If you are on a free account, ensure your Resend API key is valid and you are sending from a verified domain (or onboarding@resend.dev)'
+        }
     }
 }
 

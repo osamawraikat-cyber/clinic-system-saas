@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from "react"
+import Link from "next/link"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import * as z from "zod"
@@ -57,7 +58,20 @@ export function InviteMemberDialog({ clinicId }: InviteMemberDialogProps) {
             const result = await inviteMember(values.email, values.role, clinicId)
 
             if (result.error) {
-                toast.error(result.error)
+                if (result.code === 'LIMIT_REACHED') {
+                    toast.error(result.error, {
+                        description: "Upgrade your plan to add more team members.",
+                        action: (
+                            <Button variant="outline" size="sm" asChild>
+                                <Link href="/billing">Upgrade</Link>
+                            </Button>
+                        )
+                    })
+                } else {
+                    toast.error(result.error, {
+                        description: result.details || result.message
+                    })
+                }
             } else {
                 toast.success(t('success'))
                 setOpen(false)

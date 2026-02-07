@@ -60,21 +60,38 @@ export async function createSubscriptionCheckout(options: {
     initLemonSqueezy();
 
     const storeId = process.env.LEMONSQUEEZY_STORE_ID!;
+    if (!storeId) {
+        console.error('LEMONSQUEEZY_STORE_ID is not defined in environment variables');
+        return null;
+    }
 
-    const checkout = await createCheckout(storeId, options.variantId, {
-        checkoutData: {
-            email: options.userEmail,
-            custom: {
-                clinic_id: options.clinicId,
-                user_id: options.userId,
+    try {
+        console.log(`Creating LS checkout for store ${storeId}, variant ${options.variantId}`)
+        const { data, error } = await createCheckout(storeId, options.variantId, {
+            checkoutData: {
+                email: options.userEmail,
+                custom: {
+                    clinic_id: options.clinicId,
+                    user_id: options.userId,
+                },
             },
-        },
-        productOptions: {
-            redirectUrl: options.successUrl,
-        },
-    });
+            productOptions: {
+                redirectUrl: options.successUrl,
+            },
+        });
 
-    return checkout.data?.data?.attributes?.url || null;
+        if (error) {
+            console.error('LemonSqueezy createCheckout error object:', JSON.stringify(error, null, 2));
+            return null;
+        }
+
+        const url = data?.data?.attributes?.url;
+        console.log('LemonSqueezy checkout URL generated:', url);
+        return url || null;
+    } catch (err: any) {
+        console.error('Unexpected error in createSubscriptionCheckout:', err);
+        return null;
+    }
 }
 
 // Get subscription details
