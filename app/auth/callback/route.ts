@@ -8,7 +8,7 @@ export async function GET(request: NextRequest) {
     const code = requestUrl.searchParams.get('code')
     const token_hash = requestUrl.searchParams.get('token_hash')
     const type = requestUrl.searchParams.get('type')
-    const next = requestUrl.searchParams.get('next') ?? '/dashboard'
+    const next = requestUrl.searchParams.get('next') ?? '/en/dashboard'
     const error = requestUrl.searchParams.get('error')
     const error_description = requestUrl.searchParams.get('error_description')
 
