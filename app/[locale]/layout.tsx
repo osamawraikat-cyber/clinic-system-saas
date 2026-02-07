@@ -26,6 +26,8 @@ export const metadata: Metadata = {
     title: "ZahiFlow",
   },
   icons: {
+    icon: "/icon-192.png",
+    shortcut: "/favicon.ico",
     apple: "/icon-512.png",
   },
 };
