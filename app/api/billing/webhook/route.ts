@@ -4,9 +4,14 @@ import { getPlanFromVariantId, PlanType } from '@/lib/lemonsqueezy';
 import crypto from 'crypto';
 
 // Create admin client for server-side operations (bypasses RLS)
+const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+if (!serviceRoleKey) {
+    console.warn('SUPABASE_SERVICE_ROLE_KEY is missing! Webhook may fail to update database due to RLS.');
+}
+
 const supabaseAdmin = createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+    serviceRoleKey || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
 );
 
 // Verify webhook signature from LemonSqueezy
