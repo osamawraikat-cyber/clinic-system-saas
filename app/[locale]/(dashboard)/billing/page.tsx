@@ -183,7 +183,9 @@ export default function BillingPage() {
             if (data.url) {
                 window.location.href = data.url;
             } else {
-                toast.error(data.error || 'Failed to start checkout');
+                toast.error('Failed to start checkout', {
+                    description: data.error || 'An unexpected error occurred while creating the checkout session.'
+                });
             }
         } catch (error) {
             toast.error('Something went wrong');

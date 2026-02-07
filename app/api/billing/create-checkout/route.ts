@@ -29,7 +29,7 @@ export async function POST(request: NextRequest) {
         console.log('Using appUrl for redirects:', appUrl);
         console.log('Variant ID:', plan.variantId);
 
-        const checkoutUrl = await createSubscriptionCheckout({
+        const { url: checkoutUrl, error: checkoutError } = await createSubscriptionCheckout({
             variantId: plan.variantId,
             clinicId,
             userId,
@@ -41,7 +41,7 @@ export async function POST(request: NextRequest) {
         console.log('LemonSqueezy response URL:', checkoutUrl);
 
         if (!checkoutUrl) {
-            return NextResponse.json({ error: 'Failed to create checkout' }, { status: 500 });
+            return NextResponse.json({ error: checkoutError || 'Failed to create checkout' }, { status: 500 });
         }
 
         return NextResponse.json({ url: checkoutUrl });
