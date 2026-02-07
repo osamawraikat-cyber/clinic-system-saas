@@ -13,7 +13,10 @@ import { Loader2 } from "lucide-react"
 import { useTranslations } from 'next-intl'
 import { toast } from 'sonner'
 
+import { useParams } from 'next/navigation'
+
 export default function SignUpPage() {
+    const { locale } = useParams()
     const t = useTranslations('auth')
     const router = useRouter()
     const [isLoading, setIsLoading] = useState(false)
@@ -83,7 +86,7 @@ export default function SignUpPage() {
 
             // If we have a session (auto-confirm enabled), the trigger already ran
             // Just redirect to dashboard
-            router.push("/dashboard")
+            router.push(`/${locale}/dashboard`)
 
         } catch (err: any) {
             console.error(err)

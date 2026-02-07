@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useState, Suspense } from 'react'
-import { useSearchParams, useRouter } from 'next/navigation'
+import { useSearchParams, useRouter, useParams } from 'next/navigation'
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { CheckCircle2, XCircle, ArrowRight, Loader2 } from "lucide-react"
@@ -22,6 +22,7 @@ interface InvitationDetails {
 }
 
 function AcceptInviteContent() {
+    const { locale } = useParams()
     const searchParams = useSearchParams()
     const token = searchParams.get('token')
     const router = useRouter()
@@ -65,7 +66,7 @@ function AcceptInviteContent() {
         try {
             await acceptInvitation(token)
             toast.success('Invitation accepted!')
-            router.push('/dashboard')
+            router.push(`/${locale}/dashboard`)
         } catch (err) {
             toast.error('Failed to accept invitation')
             console.error(err)

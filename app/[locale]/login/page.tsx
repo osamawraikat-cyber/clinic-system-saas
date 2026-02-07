@@ -13,8 +13,11 @@ import { Label } from '@/components/ui/label'
 import { toast } from 'sonner'
 import { Activity, Lock, Mail } from 'lucide-react'
 
+import { useParams } from 'next/navigation'
+
 export default function LoginPage() {
     const router = useRouter()
+    const { locale } = useParams()
 
     // Create a Supabase client for the browser with cookie handling
     const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
@@ -54,7 +57,7 @@ export default function LoginPage() {
                 description: 'Successfully signed in to ZahiFlow'
             })
 
-            router.push('/dashboard')
+            router.push(`/${locale}/dashboard`)
             router.refresh()
         } catch (err: any) {
             console.error('Login error:', err)

@@ -6,7 +6,10 @@ import { createBrowserClient } from '@supabase/ssr'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Loader2 } from 'lucide-react'
 
+import { useParams } from 'next/navigation'
+
 export default function DemoPage() {
+    const { locale } = useParams()
     const router = useRouter()
     const [status, setStatus] = useState<'loading' | 'error'>('loading')
     const [errorMessage, setErrorMessage] = useState('')
@@ -38,7 +41,7 @@ export default function DemoPage() {
 
                 if (data.session) {
                     // Successfully logged in, redirect to dashboard
-                    router.push('/en/dashboard')
+                    router.push(`/${locale}/dashboard`)
                 } else {
                     setErrorMessage('Failed to create session')
                     setStatus('error')
