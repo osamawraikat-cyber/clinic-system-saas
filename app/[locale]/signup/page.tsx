@@ -86,7 +86,7 @@ export default function SignUpPage() {
 
             // If we have a session (auto-confirm enabled), the trigger already ran
             // Just redirect to dashboard
-            router.push(`/${locale}/dashboard`)
+            router.push('/dashboard')
 
         } catch (err: any) {
             console.error(err)

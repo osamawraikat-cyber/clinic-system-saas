@@ -3,7 +3,9 @@ import { PLANS, PlanType, createSubscriptionCheckout } from '@/lib/lemonsqueezy'
 
 export async function POST(request: NextRequest) {
     try {
-        const { planId, clinicId, userId, userEmail } = await request.json();
+        const body = await request.json();
+        console.log('Create checkout request body:', body);
+        const { planId, clinicId, userId, userEmail, locale = 'en' } = body;
 
         if (!planId || !clinicId || !userId) {
             return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
@@ -21,8 +23,8 @@ export async function POST(request: NextRequest) {
             clinicId,
             userId,
             userEmail: userEmail || '',
-            successUrl: `${appUrl}/billing?success=true`,
-            cancelUrl: `${appUrl}/billing?canceled=true`,
+            successUrl: `${appUrl}/${locale}/billing?success=true`,
+            cancelUrl: `${appUrl}/${locale}/billing?canceled=true`,
         });
 
         if (!checkoutUrl) {

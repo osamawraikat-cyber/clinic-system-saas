@@ -1,10 +1,11 @@
 "use client"
 
 import { useEffect, useState } from 'react'
-import { useRouter } from '@/i18n/navigation'
+import { Link, useRouter } from '@/i18n/navigation'
 import { createBrowserClient } from '@supabase/ssr'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Loader2 } from 'lucide-react'
+import { seedDemoData } from '@/app/actions/demo'
 
 import { useParams } from 'next/navigation'
 
@@ -40,8 +41,17 @@ export default function DemoPage() {
                 }
 
                 if (data.session) {
+                    // Seed demo data (invoices/visits)
+                    try {
+                        await seedDemoData()
+                    } catch (seedErr) {
+                        console.error('Failed to seed demo data:', seedErr)
+                        // Continue anyway
+                    }
+
                     // Successfully logged in, redirect to dashboard
-                    router.push(`/${locale}/dashboard`)
+                    // Using i18n router, no need to manually prefix locale
+                    router.push('/dashboard')
                 } else {
                     setErrorMessage('Failed to create session')
                     setStatus('error')
@@ -70,9 +80,9 @@ export default function DemoPage() {
                         <p className="text-sm text-muted-foreground mb-4">{errorMessage}</p>
                         <p className="text-sm">
                             Please try{' '}
-                            <a href="/signup" className="text-primary hover:underline">
+                            <Link href="/signup" className="text-primary hover:underline">
                                 signing up for a free account
-                            </a>{' '}
+                            </Link>{' '}
                             instead.
                         </p>
                     </CardContent>

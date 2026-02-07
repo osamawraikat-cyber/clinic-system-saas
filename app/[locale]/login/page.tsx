@@ -57,7 +57,7 @@ export default function LoginPage() {
                 description: 'Successfully signed in to ZahiFlow'
             })
 
-            router.push(`/${locale}/dashboard`)
+            router.push('/dashboard')
             router.refresh()
         } catch (err: any) {
             console.error('Login error:', err)

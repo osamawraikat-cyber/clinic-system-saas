@@ -66,7 +66,7 @@ function AcceptInviteContent() {
         try {
             await acceptInvitation(token)
             toast.success('Invitation accepted!')
-            router.push(`/${locale}/dashboard`)
+            router.push('/dashboard')
         } catch (err) {
             toast.error('Failed to accept invitation')
             console.error(err)

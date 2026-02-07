@@ -30,6 +30,7 @@ export function AppSidebar() {
     const t = useTranslations('Sidebar')
     const [userName, setUserName] = useState('Doctor')
     const [userRole, setUserRole] = useState('Admin')
+    const [isDemoUser, setIsDemoUser] = useState(false)
 
     const supabase = createBrowserClient(
         process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -41,6 +42,9 @@ export function AppSidebar() {
         const fetchUser = async () => {
             const { data: { user } } = await supabase.auth.getUser()
             if (user) {
+                const demoEmail = process.env.NEXT_PUBLIC_DEMO_EMAIL || 'demo@zahiflow.com'
+                setIsDemoUser(user.email === demoEmail)
+
                 if (user.user_metadata?.full_name) {
                     setUserName(user.user_metadata.full_name)
                 } else {
@@ -97,7 +101,7 @@ export function AppSidebar() {
             url: "/settings",
             icon: Settings,
         },
-    ]
+    ].filter(item => !isDemoUser || item.url !== "/billing")
 
     const handleLogout = async () => {
         try {
@@ -152,15 +156,17 @@ export function AppSidebar() {
                 </SidebarGroup>
             </SidebarContent>
             <SidebarFooter>
-                <div className="p-2 group-data-[collapsible=icon]:hidden">
-                    <Button
-                        className="w-full bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white shadow-md border-0"
-                        onClick={() => router.push('/billing')}
-                    >
-                        <CreditCard className="mr-2 h-4 w-4" />
-                        Upgrade to Pro
-                    </Button>
-                </div>
+                {!isDemoUser && (
+                    <div className="p-2 group-data-[collapsible=icon]:hidden">
+                        <Button
+                            className="w-full bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white shadow-md border-0"
+                            onClick={() => router.push('/billing')}
+                        >
+                            <CreditCard className="mr-2 h-4 w-4" />
+                            Upgrade to Pro
+                        </Button>
+                    </div>
+                )}
                 <div className="flex items-center gap-2 p-2 group-data-[collapsible=icon]:justify-center text-sidebar-foreground border-t border-white/10">
                     <Avatar className="h-8 w-8 border border-sidebar-border">
                         <AvatarImage src="/avatars/01.png" alt="@osama" />
