@@ -73,6 +73,6 @@ export async function GET(request: NextRequest) {
         }
     }
 
-    // If no code or token_hash, redirect to home
-    return NextResponse.redirect(new URL('/', requestUrl.origin))
+    // If no code or token_hash, redirect to home with a safe locale
+    return NextResponse.redirect(new URL('/en', requestUrl.origin))
 }

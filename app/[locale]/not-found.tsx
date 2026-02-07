@@ -1,8 +1,11 @@
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { FileQuestion, Home } from 'lucide-react'
+import { useParams } from 'next/navigation'
 
 export default function NotFound() {
+    const { locale } = useParams()
+
     return (
         <div className="flex h-screen w-full flex-col items-center justify-center bg-slate-50 p-4 space-y-6">
             <div className="rounded-full bg-slate-100 p-6 shadow-sm">
@@ -14,7 +17,7 @@ export default function NotFound() {
                     Sorry, we could not find the page you are looking for. It might have been moved or doesn't exist.
                 </p>
             </div>
-            <Link href="/">
+            <Link href={`/${locale}`}>
                 <Button size="lg" className="gap-2 bg-emerald-600 hover:bg-emerald-700 text-white">
                     <Home className="h-4 w-4" />
                     Return Home

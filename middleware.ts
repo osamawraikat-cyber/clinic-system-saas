@@ -121,6 +121,7 @@ export async function middleware(request: NextRequest) {
 export const config = {
     matcher: [
         // Exclude static files, API routes, and Next.js internals from middleware
-        '/((?!api|_next/static|_next/image|favicon.ico|.*\\.png$|.*\\.jpg$|.*\\.svg$|.*\\.ico$).*)',
+        // Also exclude /auth paths to allow root-level route handlers to work without locale redirection
+        '/((?!api|_next/static|_next/image|favicon.ico|auth|.*\\.png$|.*\\.jpg$|.*\\.svg$|.*\\.ico$).*)',
     ],
 }
