@@ -52,8 +52,16 @@ export async function seedDemoData() {
         .select('*', { count: 'exact', head: true })
         .eq('clinic_id', clinicId)
 
-    if (visitCount && visitCount > 0) {
-        return { success: true, message: 'Data already exists' }
+    const { count: invoiceCount } = await supabase
+        .from('invoices')
+        .select('*', { count: 'exact', head: true })
+        .eq('clinic_id', clinicId)
+
+    console.log(`Current counts for clinic ${clinicId}: Visits: ${visitCount}, Invoices: ${invoiceCount}`)
+
+    // Only skip if we have plenty of data (e.g. > 2 of each)
+    if (visitCount && visitCount > 2 && invoiceCount && invoiceCount > 2) {
+        return { success: true, message: 'Sample data already exists' }
     }
 
     // 3. Get some patient IDs. If no patients, seed them first!

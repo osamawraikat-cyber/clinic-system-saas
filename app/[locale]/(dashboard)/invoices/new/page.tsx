@@ -124,6 +124,17 @@ export default function CreateInvoicePage() {
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
+
+        const demoEmail = process.env.NEXT_PUBLIC_DEMO_EMAIL || 'demo@zahiflow.com'
+        const { data: { user } } = await supabase.auth.getUser()
+
+        if (user?.email === demoEmail) {
+            toast.info('Demo Mode', {
+                description: 'You are using a demo account. To create your own invoices, please sign up for a free account!'
+            })
+            return
+        }
+
         setLoading(true)
 
         try {

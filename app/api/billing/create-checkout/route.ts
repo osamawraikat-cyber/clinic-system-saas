@@ -3,6 +3,15 @@ import { PLANS, PlanType, createSubscriptionCheckout } from '@/lib/lemonsqueezy'
 
 export async function POST(request: NextRequest) {
     try {
+        // Diagnostic logging
+        console.log('LS API KEY present:', !!process.env.LEMONSQUEEZY_API_KEY);
+        console.log('LS STORE ID:', process.env.LEMONSQUEEZY_STORE_ID);
+
+        if (!process.env.LEMONSQUEEZY_API_KEY || !process.env.LEMONSQUEEZY_STORE_ID) {
+            console.error('Missing LemonSqueezy configuration');
+            return NextResponse.json({ error: 'Billing configuration is missing on the server' }, { status: 500 });
+        }
+
         const body = await request.json();
         console.log('Create checkout request body:', body);
         const { planId, clinicId, userId, userEmail, locale = 'en' } = body;

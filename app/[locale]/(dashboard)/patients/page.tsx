@@ -26,7 +26,17 @@ export default async function PatientsPage() {
 
 
     const { data: { user } } = await supabase.auth.getUser()
-    const isAdmin = user?.user_metadata?.role === 'admin' || user?.email === process.env.NEXT_PUBLIC_DEMO_EMAIL
+
+    // Check role in clinic_members
+    const { data: memberData } = await supabase
+        .from('clinic_members')
+        .select('role')
+        .eq('user_id', user?.id)
+        .maybeSingle()
+
+    const isAdmin = memberData?.role === 'admin' || user?.email === process.env.NEXT_PUBLIC_DEMO_EMAIL || !memberData
+    // Note: !memberData is a fallback for solo creators who might not have a clinic_members entry yet in some flows
+
 
     if (error) {
         return <div className="text-red-500">Error loading patients: {error.message}</div>
