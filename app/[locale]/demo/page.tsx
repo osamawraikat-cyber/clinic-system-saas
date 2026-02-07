@@ -21,7 +21,7 @@ export default function DemoPage() {
 
                 // Demo credentials
                 const demoEmail = process.env.NEXT_PUBLIC_DEMO_EMAIL || 'demo@zahiflow.com'
-                const demoPassword = process.env.NEXT_PUBLIC_DEMO_PASSWORD || 'demo123456'
+                const demoPassword = process.env.NEXT_PUBLIC_DEMO_PASSWORD || 'Demo123456!'
 
                 // Sign in with demo credentials
                 const { data, error } = await supabase.auth.signInWithPassword({
