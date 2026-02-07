@@ -112,10 +112,10 @@ export default function RecordVisitPage() {
     }, [selectedAppointmentId, appointments, patients, setValue])
 
     const onSubmit = async (data: VisitFormValues) => {
-        const demoEmail = process.env.NEXT_PUBLIC_DEMO_EMAIL || 'demo@zahiflow.com'
+        const demoEmail = (process.env.NEXT_PUBLIC_DEMO_EMAIL || 'demo@zahiflow.com').toLowerCase()
         const { data: { user } } = await supabase.auth.getUser()
 
-        if (user?.email === demoEmail) {
+        if (user?.email?.toLowerCase() === demoEmail) {
             toast.info('Demo Mode', {
                 description: 'You are using a demo account. To record your own visits, please sign up for a free account!'
             })

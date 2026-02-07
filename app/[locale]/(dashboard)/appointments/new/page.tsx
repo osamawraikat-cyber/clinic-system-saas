@@ -63,10 +63,10 @@ export default function ScheduleAppointmentPage() {
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
 
-        const demoEmail = process.env.NEXT_PUBLIC_DEMO_EMAIL || 'demo@zahiflow.com'
+        const demoEmail = (process.env.NEXT_PUBLIC_DEMO_EMAIL || 'demo@zahiflow.com').toLowerCase()
         const { data: { user } } = await supabase.auth.getUser()
 
-        if (user?.email === demoEmail) {
+        if (user?.email?.toLowerCase() === demoEmail) {
             toast.info('Demo Mode', {
                 description: 'You are using a demo account. To schedule your own appointments, please sign up for a free account!'
             })

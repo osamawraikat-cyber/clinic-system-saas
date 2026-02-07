@@ -31,15 +31,25 @@ export async function seedDemoData() {
     )
 
     // 1. Get current clinic (should be the demo clinic)
-    const { data: clinicIds, error: rpcError } = await supabase.rpc('get_my_clinic_ids')
-
-    if (rpcError) {
-        console.error('RPC Error (get_my_clinic_ids):', rpcError)
-        return { error: rpcError.message }
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) {
+        console.error('No user session found for seeding')
+        return { error: 'Unauthorized' }
     }
 
-    const clinicId = clinicIds?.[0]
-    console.log('Seeding demo data for clinic:', clinicId)
+    const { data: membership, error: memError } = await supabase
+        .from('clinic_members')
+        .select('clinic_id')
+        .eq('user_id', user.id)
+        .maybeSingle()
+
+    if (memError || !membership) {
+        console.error('Error finding clinic membership for seeding:', memError)
+        return { error: 'No clinic found for this user' }
+    }
+
+    const clinicId = membership.clinic_id
+    console.log('Seeding demo data for clinic:', clinicId, 'User:', user.email)
 
     if (!clinicId) {
         console.error('No clinic ID found for seeding')

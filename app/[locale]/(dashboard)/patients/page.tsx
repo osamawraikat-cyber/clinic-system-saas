@@ -34,7 +34,10 @@ export default async function PatientsPage() {
         .eq('user_id', user?.id)
         .maybeSingle()
 
-    const isAdmin = memberData?.role === 'admin' || user?.email === process.env.NEXT_PUBLIC_DEMO_EMAIL || !memberData
+    const isAdmin = memberData?.role === 'admin' ||
+        memberData?.role === 'owner' ||
+        user?.email?.toLowerCase() === (process.env.NEXT_PUBLIC_DEMO_EMAIL || 'demo@zahiflow.com').toLowerCase() ||
+        !memberData
     // Note: !memberData is a fallback for solo creators who might not have a clinic_members entry yet in some flows
 
 

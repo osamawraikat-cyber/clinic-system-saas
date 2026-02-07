@@ -8,12 +8,22 @@ export async function deletePatient(id: string) {
 
     // 1. Check if user is admin
     const { data: { user } } = await supabase.auth.getUser()
-    if (!user || user.user_metadata?.role !== 'admin') {
-        // Fallback check: if role is missing but it's a demo user, let them delete (or we can be strict)
-        // Given the request, it should be restricted to admin.
-        if (user?.user_metadata?.role !== 'admin' && user?.email !== process.env.NEXT_PUBLIC_DEMO_EMAIL) {
-            return { success: false, error: 'Unauthorized: Only admins can delete patients' }
-        }
+    if (!user) return { success: false, error: 'Unauthorized' }
+
+    // Check role in clinic_members
+    const { data: memberData } = await supabase
+        .from('clinic_members')
+        .select('role')
+        .eq('user_id', user.id)
+        .maybeSingle()
+
+    const isAdmin = memberData?.role === 'admin' ||
+        memberData?.role === 'owner' ||
+        user.email?.toLowerCase() === (process.env.NEXT_PUBLIC_DEMO_EMAIL || 'demo@zahiflow.com').toLowerCase() ||
+        !memberData
+
+    if (!isAdmin) {
+        return { success: false, error: 'Unauthorized: Only admins or owners can delete patients' }
     }
 
     // 2. Delete the patient

@@ -111,10 +111,10 @@ export default function AddPatientPage() {
     }
 
     const onSubmit = async (data: PatientFormValues) => {
-        const demoEmail = process.env.NEXT_PUBLIC_DEMO_EMAIL || 'demo@zahiflow.com'
+        const demoEmail = (process.env.NEXT_PUBLIC_DEMO_EMAIL || 'demo@zahiflow.com').toLowerCase()
         const { data: { user } } = await supabase.auth.getUser()
 
-        if (user?.email === demoEmail) {
+        if (user?.email?.toLowerCase() === demoEmail) {
             toast.info('Demo Mode', {
                 description: 'You are using a demo account. To save your own patients, please sign up for a free account!'
             })
