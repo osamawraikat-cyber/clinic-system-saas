@@ -1,15 +1,16 @@
 import { lemonSqueezySetup, createCheckout, getSubscription, cancelSubscription, listProducts, listVariants } from '@lemonsqueezy/lemonsqueezy.js';
 
 // Initialize LemonSqueezy SDK
-let isInitialized = false;
+let currentApiKey = '';
 
 export function initLemonSqueezy() {
-    if (!isInitialized && process.env.LEMONSQUEEZY_API_KEY) {
+    const apiKey = process.env.LEMONSQUEEZY_API_KEY;
+    if (apiKey && apiKey !== currentApiKey) {
         lemonSqueezySetup({
-            apiKey: process.env.LEMONSQUEEZY_API_KEY,
+            apiKey: apiKey,
             onError: (error) => console.error('LemonSqueezy error:', error),
         });
-        isInitialized = true;
+        currentApiKey = apiKey;
     }
 }
 

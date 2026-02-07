@@ -10,7 +10,8 @@ export async function sendInvitationEmail(email: string, inviteLink: string, cli
 
     // If domain is not verified, Resend only allows sending from onboarding@resend.dev
     // to the email address associated with the account.
-    const fromEmail = process.env.RESEND_FROM_EMAIL || 'onboarding@resend.dev';
+    // If zahiflow.com is verified, this MUST be ZahiFlow <noreply@zahiflow.com>
+    const fromEmail = process.env.RESEND_FROM_EMAIL || 'ZahiFlow <noreply@zahiflow.com>';
 
     try {
         const { data, error } = await resend.emails.send({
